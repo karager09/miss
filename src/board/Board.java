@@ -4,7 +4,7 @@ import cell.Cell;
 
 public class Board {
 
-    int HEIGHT = 10, WIDTH = 10;
+    int HEIGHT = 50, WIDTH = 50;
     private Cell[][] cells;
 
     public Cell[][] getCells() {
@@ -31,9 +31,22 @@ public class Board {
 
     }
 
-    public float[][] currentState() {
+        public float[][] currentState() {
         return new float[HEIGHT][WIDTH];
     }
+
+
+
+    public void print() {
+        for (Cell[] cTable : cells) {
+            for (Cell c : cTable) {
+                System.out.print("|" + c.getOilHeight());
+
+            }
+            System.out.println("|");
+        }
+    }
+
 
     public int getHeight() {
         return HEIGHT;

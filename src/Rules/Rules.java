@@ -5,7 +5,7 @@ import cell.Cell;
 
 
 public class Rules {
-    final static float m = 0.0034f; //from Cellular Automata Based Model for the Prediction of Oil Slicks Behavior
+    final static float m = 0.14f; //from Cellular Automata Based Model for the Prediction of Oil Slicks Behavior 0.0034
     final static float d = 0.22f;
 
     public static float rule(Board board, int i, int j){
