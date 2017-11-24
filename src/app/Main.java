@@ -1,5 +1,8 @@
 package app;
 
+import board.Board;
+
+import cell.Cell;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,8 +19,26 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    public static void print(Board board){
+        for (Cell[] cTable:board.getCells()) {
+            for (Cell c: cTable) {
+                System.out.print("|"+c.getOilHeight());
+
+            }
+            System.out.println("|");
+        }
+
+
+
+
+    }
+
 
     public static void main(String[] args) {
-        launch(args);
+        Board board = new Board();
+        board = Rules.Rules.applyRules(board);
+        //board = Rules.Rules.applyRules(board);
+        print(board);
+        //launch(args);
     }
 }

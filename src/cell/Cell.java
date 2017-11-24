@@ -1,10 +1,11 @@
 package cell;
 
-public class Cell implements CellInterface {
-    float oilHeight;
+public class Cell {
+    private float oilHeight;
 
 
-    @Override
+
+
     public void setOilHeight(float height) {
         oilHeight = height;
     }
@@ -13,7 +14,6 @@ public class Cell implements CellInterface {
         this.oilHeight = oilHeight;
     }
 
-    @Override
     public float getOilHeight() {
         return oilHeight;
     }
