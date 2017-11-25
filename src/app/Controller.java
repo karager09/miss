@@ -3,6 +3,9 @@ package app;
 import Rules.Rules;
 import board.Board;
 import com.sun.javafx.css.Rule;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -10,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -17,16 +21,20 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 public class Controller {
 
-    Board board = Rules.applyRules(Rules.applyRules(Rules.applyRules(Rules.applyRules(Rules.applyRules(new Board())))));
+
+    Board board = new Board();
+
+    final Timeline timeline = new Timeline();
 
     @FXML
-    private Button rewind_btn;
+    private Button rewind_btn, start_btn, next_state_btn;
 
     @FXML
-    private Slider slider_rewind;
+    private Slider slider_rewind, slider_animation_speed;
 
     @FXML
     private BorderPane main_window;
@@ -44,9 +52,24 @@ public class Controller {
     }
 
     @FXML
+    public void setAnimationSpeed(MouseEvent e){
+
+        timeline.stop();
+        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(10000/slider_animation_speed.getValue()),
+                event -> nextState(null)));
+        start_btn.setText("Start");
+    }
+
+    @FXML
     public void startClicked(ActionEvent e){
-        //board = Rules.applyRules(board);
-        createBoard(board);
+        if(start_btn.getText().equals("Start")){
+        timeline.play();
+        start_btn.setText("Stop");}
+        else {
+            timeline.pause();
+            start_btn.setText("Start");
+
+        }
     }
 
     @FXML
@@ -56,14 +79,6 @@ public class Controller {
 
     }
 
-
-
-    @FXML
-    public void resizeWindow(ActionEvent e){
-        createBoard(board);
-
-
-    }
 
 
     public void createBoard(Board board) {
@@ -132,17 +147,21 @@ public class Controller {
 
         main_window.widthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-                //System.out.println("Width: " + newSceneWidth);
                 createBoard(board);
             }
         });
 
         main_window.heightProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-                //System.out.println("Height: " + newSceneHeight);
                 createBoard(board);
             }
         });
+
+
+
+        timeline.setCycleCount(Animation.INDEFINITE);
+        setAnimationSpeed(null);
+
 
         createBoard(board);
     }

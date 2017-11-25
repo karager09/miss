@@ -27,7 +27,7 @@ public class Board {
                 cells[i][j] = new Cell(0);
             }
         }
-        cells[HEIGHT/2][WIDTH/2].setOilHeight(100f);
+        cells[HEIGHT/2][WIDTH/2].setOilHeight(10000f);
 
     }
 
