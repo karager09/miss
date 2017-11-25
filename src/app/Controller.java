@@ -2,10 +2,13 @@ package app;
 
 import Rules.Rules;
 import board.Board;
+import com.sun.javafx.css.Rule;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -19,6 +22,11 @@ public class Controller {
 
     Board board = Rules.applyRules(Rules.applyRules(Rules.applyRules(Rules.applyRules(Rules.applyRules(new Board())))));
 
+    @FXML
+    private Button rewind_btn;
+
+    @FXML
+    private Slider slider_rewind;
 
     @FXML
     private BorderPane main_window;
@@ -26,11 +34,30 @@ public class Controller {
     @FXML
     private FlowPane flowPane;
 
-
-    public void startClicked(ActionEvent e){
+    @FXML
+    public void rewind(ActionEvent e){
+        for (int i = 0; i < slider_rewind.getValue(); i++) {
+            board = Rules.applyRules(board);
+        }
         createBoard(board);
 
     }
+
+    @FXML
+    public void startClicked(ActionEvent e){
+        //board = Rules.applyRules(board);
+        createBoard(board);
+    }
+
+    @FXML
+    public void nextState(ActionEvent e){
+        board = Rules.applyRules(board);
+        createBoard(board);
+
+    }
+
+
+
     @FXML
     public void resizeWindow(ActionEvent e){
         createBoard(board);
@@ -96,6 +123,7 @@ public class Controller {
                 flowPane.getChildren().add(r);
             }
         }
+
     }
 
 
