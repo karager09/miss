@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -32,6 +33,9 @@ public class Controller {
 
     @FXML
     private Button rewind_btn, start_btn, next_state_btn;
+
+    @FXML
+    private TextField show_max_value_textfield;
 
     @FXML
     private Slider slider_rewind, slider_animation_speed;
@@ -104,6 +108,8 @@ public class Controller {
             }
         }
 
+        show_max_value_textfield.setText(String.format("Max: %.2f",maxValue));
+
         int w = (int) (main_width / board.getWidth());
         int h = (int) (main_height / board.getHeight());
 
@@ -113,7 +119,8 @@ public class Controller {
                 r.setWidth(w);
                 r.setHeight(h);
 
-                if(board.getCells()[i][j].getOilHeight() < 0.05 * maxValue) r.setFill(Paint.valueOf("FFFFFF"));
+                if(board.getCells()[i][j].isLand)   r.setFill(Paint.valueOf("00ff00"));
+                else if(board.getCells()[i][j].getOilHeight() < 0.05 * maxValue) r.setFill(Paint.valueOf("ffffff"));
                 else if(board.getCells()[i][j].getOilHeight() < 0.10 * maxValue)r.setFill(Paint.valueOf("f2f2f2"));
                 else if(board.getCells()[i][j].getOilHeight() < 0.15 * maxValue)r.setFill(Paint.valueOf("e6e6e6"));
                 else if(board.getCells()[i][j].getOilHeight() < 0.20 * maxValue)r.setFill(Paint.valueOf("d9d9d9"));

@@ -13,26 +13,24 @@ public class Board {
 
     public Board() {
 
-
         cells = new Cell[HEIGHT][WIDTH];
 
-//        for (CellInterface[] cTable: cells) {
-//            for (CellInterface c:cTable) {
-//                c = new Cell(0);
-//            }
-//
-//        }
+
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                cells[i][j] = new Cell(0);
+                cells[i][j] = new Cell(0,false);
             }
         }
         cells[HEIGHT/2][WIDTH/2].setOilHeight(10000f);
 
+        //dla proby ustawiamy jakis lad
+        for (int i = HEIGHT/5; i < HEIGHT/5*2; i++) {
+            for (int j = WIDTH/5; j < WIDTH/5*2; j++) {
+                cells[i][j] = new Cell(0,true);
+            }
+        }
+
     }
-
-        //public float[][] currentState() { return new float[HEIGHT][WIDTH]; }
-
 
 
     public void print() {
