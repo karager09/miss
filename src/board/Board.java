@@ -4,7 +4,7 @@ import cell.Cell;
 
 public class Board {
 
-    int HEIGHT = 50, WIDTH = 50;
+    int HEIGHT = 100, WIDTH = 100;
     private Cell[][] cells;
 
     public Cell[][] getCells() {
@@ -31,9 +31,7 @@ public class Board {
 
     }
 
-        public float[][] currentState() {
-        return new float[HEIGHT][WIDTH];
-    }
+        //public float[][] currentState() { return new float[HEIGHT][WIDTH]; }
 
 
 

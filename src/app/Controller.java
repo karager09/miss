@@ -2,32 +2,59 @@ package app;
 
 import Rules.Rules;
 import board.Board;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class Controller {
 
+    Board board = Rules.applyRules(Rules.applyRules(Rules.applyRules(Rules.applyRules(Rules.applyRules(new Board())))));
+
+
+    @FXML
+    private BorderPane main_window;
+
     @FXML
     private FlowPane flowPane;
 
+
     public void startClicked(ActionEvent e){
-        //createBoard(new Board());
+        createBoard(board);
+
+    }
+    @FXML
+    public void resizeWindow(ActionEvent e){
+        createBoard(board);
+
 
     }
 
+
     public void createBoard(Board board) {
 
-        flowPane.getChildren().clear();
-        flowPane.setMaxWidth(600);
-        flowPane.setPrefWidth(600);
-        flowPane.setMinWidth(600);
+        //odpowiedizalne za odpowiednia wysokosc i szerokosc okna
+        double main_height = ((int)((main_window.getHeight() - 50)/board.getHeight())*board.getHeight());
+        double main_width = ((int)((main_window.getWidth() - 5)/board.getWidth())*board.getWidth());
 
+        //zeby kwadrat
+        if(main_height > main_width) main_height = main_width;
+        else main_width = main_height;
+
+        flowPane.getChildren().clear();
+        flowPane.setMaxWidth(main_width);
+        flowPane.setPrefWidth(main_width);
+        flowPane.setMinWidth(main_width);
+
+        //max wartosc slupa oleju
         float maxValue = 0;
         for (int i = 0; i < board.getHeight(); i++) {
             for (int j = 0; j < board.getWidth(); j++) {
@@ -35,17 +62,8 @@ public class Controller {
             }
         }
 
-        double px_height = flowPane.getHeight();
-        double px_width = flowPane.getWidth();
-        System.out.println(px_height+", "+ px_width);
-        double w = (600 / board.getWidth()) - 4;
-
-        if ((board.getWidth() * (w + 4) + w) < 600) {
-            flowPane.setMaxWidth(board.getWidth() * (w + 4));
-            flowPane.setPrefWidth(board.getWidth() * (w + 4));
-            flowPane.setMinWidth(board.getWidth() * (w + 4));
-        }
-        double h = (600 / board.getHeight()) - 4;
+        int w = (int) (main_width / board.getWidth());
+        int h = (int) (main_height / board.getHeight());
 
         for (int i = 0; i < board.getHeight(); i++) {
             for (int j = 0; j < board.getWidth(); j++) {
@@ -78,19 +96,27 @@ public class Controller {
                 flowPane.getChildren().add(r);
             }
         }
-
-
-//        Rectangle r = new Rectangle();
-//        r.setWidth(100);
-//        r.setHeight(100);
-//        r.setFill(Paint.valueOf("000000"));
-//        flowPane.getChildren().add(r);
     }
 
 
     @FXML
     void initialize(){
-        createBoard(Rules.applyRules(Rules.applyRules(Rules.applyRules(new Board()))));
+
+        main_window.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+                //System.out.println("Width: " + newSceneWidth);
+                createBoard(board);
+            }
+        });
+
+        main_window.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+                //System.out.println("Height: " + newSceneHeight);
+                createBoard(board);
+            }
+        });
+
+        createBoard(board);
     }
 
 }
