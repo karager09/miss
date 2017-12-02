@@ -7,14 +7,14 @@ public class Cell {
     public enum type{WATER,LAND,BEACH}
 
 
-    private type typeOfLand;
-    private float oilHeight;
-    private float oilBelowSurface;
-    private float currentSpeed;
-    private float windSpeed;
-    private directions windDirection;
-    private directions currentDirection;
-    private int temperature;
+    public type typeOfLand;
+    public float oilHeight;
+    public float oilBelowSurface;
+    public float currentSpeed;
+    public float windSpeed;
+    public directions windDirection;
+    public directions currentDirection;
+    public int temperature;
 
 
 

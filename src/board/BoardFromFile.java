@@ -10,6 +10,9 @@ import static cell.Cell.directions.*;
 import static cell.Cell.type.*;
 
 public class BoardFromFile {
+    public static float maxWindSpeedEverObserved = 100;
+    public static float maxCurrentSpeedEverObserved = 30;
+
     public static float maxWindSpeed = 25;
     public static float maxCurrentSpeed = 10;
 
@@ -95,13 +98,6 @@ public class BoardFromFile {
 
 
 
-
-
-
-
-
-
-
         cellsWithWindDirection = new Cell.directions[windCount][][];
         for (int n = 1; n <= windCount; n++) {
             cellsWithWindDirection[n - 1] = new Cell.directions[Board.HEIGHT][Board.WIDTH];
@@ -158,7 +154,9 @@ public class BoardFromFile {
                         else if(green < 85 && blue < 127 && red > 127) cellsWithCurrentDirection[n-1][i][j] = SW;
                         else if(green < 170 && green > 85 && blue < 127 && red > 127) cellsWithCurrentDirection[n-1][i][j] = W;
                         else cellsWithCurrentDirection[n-1][i][j] = NW;
+                        //System.out.println(cellsWithWindDirection[n-1][i][j].name());
                     }
+                    //System.out.println();
                 }
             } catch (Exception e){
                 System.out.println("Something went wrong with the file: currentdirection.jpg");

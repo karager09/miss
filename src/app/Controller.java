@@ -3,6 +3,7 @@ package app;
 import Rules.Rules;
 import board.Board;
 import board.BoardFromFile;
+import cell.Cell;
 import com.sun.javafx.css.Rule;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -28,7 +29,7 @@ import javafx.util.Duration;
 public class Controller {
 
 
-    Board board = new Board();
+    Board board = new Board(1);
 
     final Timeline timeline = new Timeline();
 
@@ -92,7 +93,7 @@ public class Controller {
 
     public void createBoard(Board board) {
 
-        //odpowiedizalne za odpowiednia wysokosc i szerokosc okna
+        //odpowiedzialne za odpowiednia wysokosc i szerokosc okna
         double main_height = ((int)((main_window.getHeight() - 50)/board.getHeight())*board.getHeight());
         double main_width = ((int)((main_window.getWidth() - 5)/board.getWidth())*board.getWidth());
 
@@ -167,8 +168,6 @@ public class Controller {
                 createBoard(board);
             }
         });
-
-
 
         timeline.setCycleCount(Animation.INDEFINITE);
         setAnimationSpeed(null);

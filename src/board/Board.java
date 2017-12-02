@@ -11,16 +11,15 @@ public class Board {
         return cells;
     }
 
-    public Board() {
-
-        int n =1;
+    public Board(int n) {
+        n = n-1;
+        if (BoardFromFile.cellsWithCurrentSpeed.length - 1 < n) n = BoardFromFile.cellsWithCurrentSpeed.length - 1;
 
         cells = new Cell[HEIGHT][WIDTH];
 
 
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                //cells[i][j] = new Cell(0,false);
                 cells[i][j] = new Cell(BoardFromFile.cellsWithLandType[i][j], BoardFromFile.cellsWithCurrentSpeed[n][i][j], BoardFromFile.cellsWithWindSpeed[n][i][j],BoardFromFile.cellsWithWindDirection[n][i][j],BoardFromFile.cellsWithCurrentDirection[n][i][j],20);
             }
         }
