@@ -53,7 +53,7 @@ public class Controller {
         for (int i = 0; i < slider_rewind.getValue(); i++) {
             board = Rules.applyRules(board);
         }
-        createBoard(board,1);
+        createBoard(board,0);
 
     }
 
@@ -85,7 +85,7 @@ public class Controller {
     @FXML
     public void nextState(ActionEvent e){
         board = Rules.applyRules(board);
-        createBoard(board,1);
+        createBoard(board,0);
 
     }
 
@@ -179,13 +179,13 @@ public class Controller {
     void initialize(){
         main_window.widthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-                createBoard(board,1);
+                createBoard(board,0);
             }
         });
 
         main_window.heightProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-                createBoard(board, 1);
+                createBoard(board, 0);
             }
         });
 
@@ -193,7 +193,7 @@ public class Controller {
         setAnimationSpeed(null);
 
 
-        createBoard(board,1);
+        createBoard(board,0);
 
 
     }
