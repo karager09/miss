@@ -4,12 +4,14 @@ package cell;
 
 public class Cell {
     public enum directions{N,NE,E,SE,S,SW,W,NW}
+    public enum type{WATER,LAND,BEACH}
 
 
-    public boolean isLand;
+    private type typeOfLand;
     private float oilHeight;
-    private int waterCurrent;
-    private int windSpeed;
+    private float oilBelowSurface;
+    private float currentSpeed;
+    private float windSpeed;
     private directions windDirection;
     private directions currentDirection;
     private int temperature;
@@ -17,19 +19,39 @@ public class Cell {
 
 
     public Cell(Cell oldCell){
-        this.isLand = oldCell.isLand;
+        this.typeOfLand = oldCell.typeOfLand;
         this.oilHeight = oldCell.oilHeight;
-    }
-    public void setOilHeight(float height) {
-        oilHeight = height;
+
     }
 
-    public Cell(float oilHeight, boolean isLand){
+
+    public Cell(float oilHeight, type typeOfLand){
         this.oilHeight = oilHeight;
-        this.isLand = isLand;
+        this.typeOfLand = typeOfLand;
+    }
+
+
+    public Cell(type typeOfLand, float currentSpeed, float windSpeed, directions windDirection, directions currentDirection, int temperature) {
+        this.typeOfLand = typeOfLand;
+        this.currentSpeed = currentSpeed;
+        this.windSpeed = windSpeed;
+        this.windDirection = windDirection;
+        this.currentDirection = currentDirection;
+        this.temperature = temperature;
+    }
+
+    public void setOilHeight(float height) {
+        oilHeight = height;
     }
 
     public float getOilHeight() {
         return oilHeight;
     }
+
+
+    public boolean isLand(){
+        if (typeOfLand == type.WATER) return false;
+        return true;
+    }
+
 }

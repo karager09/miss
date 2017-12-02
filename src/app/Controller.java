@@ -2,6 +2,7 @@ package app;
 
 import Rules.Rules;
 import board.Board;
+import board.BoardFromFile;
 import com.sun.javafx.css.Rule;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -59,8 +60,12 @@ public class Controller {
     public void setAnimationSpeed(MouseEvent e){
 
         timeline.stop();
-        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(10000/slider_animation_speed.getValue()),
+//        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(10000/slider_animation_speed.getValue()),
+//                event -> nextState(null)));
+
+        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(500*slider_animation_speed.getValue()),
                 event -> nextState(null)));
+
         start_btn.setText("Start");
     }
 
@@ -119,7 +124,7 @@ public class Controller {
                 r.setWidth(w);
                 r.setHeight(h);
 
-                if(board.getCells()[i][j].isLand)   r.setFill(Paint.valueOf("00ff00"));
+                if(board.getCells()[i][j].isLand())   r.setFill(Paint.valueOf("00ff00"));
                 else if(board.getCells()[i][j].getOilHeight() < 0.05 * maxValue) r.setFill(Paint.valueOf("ffffff"));
                 else if(board.getCells()[i][j].getOilHeight() < 0.10 * maxValue)r.setFill(Paint.valueOf("f2f2f2"));
                 else if(board.getCells()[i][j].getOilHeight() < 0.15 * maxValue)r.setFill(Paint.valueOf("e6e6e6"));
@@ -151,7 +156,6 @@ public class Controller {
 
     @FXML
     void initialize(){
-
         main_window.widthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
                 createBoard(board);
@@ -171,6 +175,8 @@ public class Controller {
 
 
         createBoard(board);
+
+
     }
 
 }

@@ -3,6 +3,7 @@ package app;
 import Rules.Rules;
 import board.Board;
 
+import board.BoardFromFile;
 import cell.Cell;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -18,6 +19,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+
+        BoardFromFile.getAllCellsFromFile();
+
+
         FXMLLoader loader = new FXMLLoader();
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         loader.setLocation(this.getClass().getResource("sample.fxml"));
@@ -35,10 +40,6 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        Board board = new Board();
-        board = Rules.applyRules(Rules.applyRules(Rules.applyRules(new Board())));
-        //board = Rules.Rules.applyRules(board);
-        //board.print();
         launch(args);
     }
 }
