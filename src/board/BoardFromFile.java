@@ -33,9 +33,9 @@ public class BoardFromFile {
             for (int i = 0; i < Board.HEIGHT; i++) {
                 for (int j = 0; j < Board.WIDTH; j++) {
                     int pxl = image.getRGB(j, i);
-                    if((pxl & 0x00ffffff) > 0xeeeeee) //czy jest białe, jak tak to morze
+                    if((pxl & 0x00ffffff) > 0xefefef) //czy jest białe, jak tak to morze
                         cellsWithLandType[i][j] = WATER;
-                    else if((pxl & 0x00ffffff) > 0x555555)
+                    else if((pxl & 0x00ffffff) > 0x222222)
                         cellsWithLandType[i][j] = BEACH;
                     else cellsWithLandType[i][j] = LAND;
                 }

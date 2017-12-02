@@ -10,6 +10,7 @@ public class Cell {
     public type typeOfLand;
     public float oilHeight;
     public float oilBelowSurface;
+    public float oilSettled;
     public float currentSpeed;
     public float windSpeed;
     public directions windDirection;
@@ -48,10 +49,25 @@ public class Cell {
         return oilHeight;
     }
 
+    public void setOilBelowSurface(float oilBelowSurface){
+        this.oilBelowSurface = oilBelowSurface;
+    }
+
+    public float getSubsurfaceOil(){return oilBelowSurface;}
+
+    public void setOilSettled(float oilSettled){
+        this.oilSettled = oilSettled;
+    }
+
 
     public boolean isLand(){
-        if (typeOfLand == type.WATER) return false;
-        return true;
+        if (typeOfLand == type.LAND) return true;
+        return false;
+    }
+
+    public boolean isBeach(){
+        if (typeOfLand == type.BEACH) return true;
+        return false;
     }
 
 }
