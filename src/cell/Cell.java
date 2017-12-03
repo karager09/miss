@@ -53,7 +53,7 @@ public class Cell {
         this.oilBelowSurface = oilBelowSurface;
     }
 
-    public float getSubsurfaceOil(){return oilBelowSurface;}
+    public float getOilBelowSurface(){return oilBelowSurface;}
 
     public void setOilSettled(float oilSettled){
         this.oilSettled = oilSettled;

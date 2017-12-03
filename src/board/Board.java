@@ -44,7 +44,7 @@ public class Board {
     public void print() {
         for (Cell[] cTable : cells) {
             for (Cell c : cTable) {
-                System.out.print("|" + c.getOilHeight());
+                System.out.print("|" + c.getOilBelowSurface());
 
             }
             System.out.println("|");

@@ -115,7 +115,7 @@ public class Rules {
 
         Cell[][] cells = board.getCells();
         Cell oldCell = cells[i][j];
-        float oldValue = oldCell.getOilHeight();
+        float oldValue = oldCell.getOilBelowSurface();
         float ifBorder = borderWanishRatio * oldValue;
         float oilFromSurface = Rs * cells[i][j].getOilHeight() * cells[i][j].windSpeed / BoardFromFile.maxWindSpeedEverObserved;
 
@@ -176,16 +176,16 @@ public class Rules {
         if(oldCell.isBeach()) return 0;
 
 
-        float sumOfDiffrence = (i > 0?(cells[i-1][j].isLand()||cells[i-1][j].isBeach() ? oldValue:cells[i-1][j].getSubsurfaceOil() * (1+n)) : ifBorder);
-        sumOfDiffrence += (i < board.getHeight()-1? (cells[i+1][j].isLand()||cells[i+1][j].isBeach() ? oldValue:cells[i+1][j].getSubsurfaceOil() * (1+s)):ifBorder);
-        sumOfDiffrence += (j > 0? (cells[i][j-1].isLand()||cells[i][j-1].isBeach() ? oldValue: cells[i][j-1].getSubsurfaceOil()*(1+w)):ifBorder);
-        sumOfDiffrence += (j < board.getWidth()-1? (cells[i][j+1].isLand()||cells[i][j+1].isBeach() ? oldValue:cells[i][j+1].getSubsurfaceOil() * (1+e)):ifBorder) - 4 * oldValue;
-        sumOfDiffrence += d * (i > 0 && j>0?(cells[i-1][j-1].isLand()||cells[i-1][j-1].isBeach() ? oldValue:cells[i-1][j-1].getSubsurfaceOil()*(1+nw)) : ifBorder);
-        sumOfDiffrence += d * (i < board.getHeight()-1 && j>0? (cells[i+1][j-1].isLand()||cells[i+1][j-1].isBeach() ? oldValue:cells[i+1][j-1].getSubsurfaceOil()*(1+sw)):ifBorder);
-        sumOfDiffrence += d *(i > 0 && j < board.getWidth()-1? (cells[i-1][j+1].isLand()||cells[i-1][j+1].isBeach() ? oldValue:cells[i-1][j+1].getSubsurfaceOil()*(1+ne)):ifBorder);
-        sumOfDiffrence += d * ((i < board.getHeight()-1 && j < board.getWidth()-1? (cells[i+1][j+1].isLand()||cells[i+1][j+1].isBeach() ? oldValue: cells[i+1][j+1].getSubsurfaceOil()*(1+se)):ifBorder) - 4 * oldValue);
+        float sumOfDiffrence = (i > 0?(cells[i-1][j].isLand()||cells[i-1][j].isBeach() ? oldValue:cells[i-1][j].getOilBelowSurface() * (1+n)) : ifBorder);
+        sumOfDiffrence += (i < board.getHeight()-1? (cells[i+1][j].isLand()||cells[i+1][j].isBeach() ? oldValue:cells[i+1][j].getOilBelowSurface() * (1+s)):ifBorder);
+        sumOfDiffrence += (j > 0? (cells[i][j-1].isLand()||cells[i][j-1].isBeach() ? oldValue: cells[i][j-1].getOilBelowSurface()*(1+w)):ifBorder);
+        sumOfDiffrence += (j < board.getWidth()-1? (cells[i][j+1].isLand()||cells[i][j+1].isBeach() ? oldValue:cells[i][j+1].getOilBelowSurface() * (1+e)):ifBorder) - 4 * oldValue;
+        sumOfDiffrence += d * (i > 0 && j>0?(cells[i-1][j-1].isLand()||cells[i-1][j-1].isBeach() ? oldValue:cells[i-1][j-1].getOilBelowSurface()*(1+nw)) : ifBorder);
+        sumOfDiffrence += d * (i < board.getHeight()-1 && j>0? (cells[i+1][j-1].isLand()||cells[i+1][j-1].isBeach() ? oldValue:cells[i+1][j-1].getOilBelowSurface()*(1+sw)):ifBorder);
+        sumOfDiffrence += d *(i > 0 && j < board.getWidth()-1? (cells[i-1][j+1].isLand()||cells[i-1][j+1].isBeach() ? oldValue:cells[i-1][j+1].getOilBelowSurface()*(1+ne)):ifBorder);
+        sumOfDiffrence += d * ((i < board.getHeight()-1 && j < board.getWidth()-1? (cells[i+1][j+1].isLand()||cells[i+1][j+1].isBeach() ? oldValue: cells[i+1][j+1].getOilBelowSurface()*(1+se)):ifBorder) - 4 * oldValue);
 
-        float subsurfaceOil = oilFromSurface + oldCell.getSubsurfaceOil() + m * (sumOfDiffrence);
+        float subsurfaceOil = oilFromSurface + oldCell.getOilBelowSurface() + m * (sumOfDiffrence);
 
         return subsurfaceOil;
     }

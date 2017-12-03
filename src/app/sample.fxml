@@ -7,45 +7,44 @@
 <?import javafx.scene.effect.Glow?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.HBox?>
 
 <BorderPane fx:id="main_window" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="805.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
-   <top>
-      <HBox BorderPane.alignment="CENTER">
-         <children>
-            <Button fx:id="start_btn" mnemonicParsing="false" onAction="#startClicked" text="Start">
-               <HBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </HBox.margin>
-            </Button>
-            <Slider fx:id="slider_animation_speed" blockIncrement="5.0" majorTickUnit="100.0" max="5.0" min="1.0" minorTickCount="50" onMouseReleased="#setAnimationSpeed" showTickMarks="true" value="2.0">
-               <HBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </HBox.margin></Slider>
-            <Button fx:id="next_state_btn" mnemonicParsing="false" onAction="#nextState" text="Next State">
-               <HBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </HBox.margin></Button>
-            <Button mnemonicParsing="false" onAction="#rewind" text="Rewind">
-               <HBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </HBox.margin>
-            </Button>
-            <Slider id="slider_rewind" fx:id="slider_rewind" blockIncrement="5.0" max="1000.0" min="1.0" prefHeight="45.0" prefWidth="150.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="100.0">
-               <HBox.margin>
-                  <Insets left="20.0" right="15.0" top="5.0" />
-               </HBox.margin>
-               <effect>
-                  <Glow />
-               </effect></Slider>
-            <TextField fx:id="show_max_value_textfield" editable="false" prefWidth="110.0" text="Max: ">
-               <HBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </HBox.margin>
-            </TextField>
-         </children></HBox>
-   </top>
    <center>
       <FlowPane fx:id="flowPane" prefHeight="800.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
    </center>
+   <top>
+      <FlowPane BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="start_btn" mnemonicParsing="false" onAction="#startClicked" text="Start">
+               <FlowPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </FlowPane.margin>
+            </Button>
+            <Slider fx:id="slider_animation_speed" blockIncrement="5.0" majorTickUnit="100.0" max="5.0" min="1.0" minorTickCount="50" onMouseReleased="#setAnimationSpeed" showTickMarks="true" value="2.0">
+               <FlowPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </FlowPane.margin>
+            </Slider>
+            <Button fx:id="next_state_btn" mnemonicParsing="false" onAction="#nextState" text="Next State">
+               <FlowPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </FlowPane.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#rewind" text="Rewind">
+               <FlowPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </FlowPane.margin>
+            </Button>
+            <Slider id="slider_rewind" fx:id="slider_rewind" blockIncrement="5.0" max="1000.0" min="1.0" prefHeight="45.0" prefWidth="150.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="100.0">
+               <effect>
+                  <Glow />
+               </effect>
+               <FlowPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </FlowPane.margin>
+            </Slider>
+            <TextField fx:id="show_max_value_textfield" editable="false" prefWidth="110.0" text="Max: " />
+         </children>
+      </FlowPane>
+   </top>
 </BorderPane>

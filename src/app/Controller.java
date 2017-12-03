@@ -53,7 +53,7 @@ public class Controller {
         for (int i = 0; i < slider_rewind.getValue(); i++) {
             board = Rules.applyRules(board);
         }
-        createBoard(board,0);
+        createBoard(board,1);
 
     }
 
@@ -85,7 +85,7 @@ public class Controller {
     @FXML
     public void nextState(ActionEvent e){
         board = Rules.applyRules(board);
-        createBoard(board,0);
+        createBoard(board,1);
 
     }
 
@@ -118,13 +118,11 @@ public class Controller {
         else {
             for (int i = 0; i < board.getHeight(); i++) {
                 for (int j = 0; j < board.getWidth(); j++) {
-                    if (maxValue < board.getCells()[i][j].getSubsurfaceOil())
-                        maxValue = board.getCells()[i][j].getSubsurfaceOil();
+                    if (maxValue < board.getCells()[i][j].getOilBelowSurface())
+                        maxValue = board.getCells()[i][j].getOilBelowSurface();
                 }
             }
         }
-
-
 
 
         show_max_value_textfield.setText(String.format("Max: %.2f",maxValue));
@@ -141,9 +139,9 @@ public class Controller {
 
 
                 float oilVolume;
-                if(n == 0) oilVolume = board.getCells()[i][j].getOilHeight(); else oilVolume = board.getCells()[i][j].getSubsurfaceOil();
+                if(n == 0) oilVolume = board.getCells()[i][j].getOilHeight(); else oilVolume = board.getCells()[i][j].getOilBelowSurface();
 
-
+                if(maxValue == 0) maxValue=1;// zeby jak sa same zera wyswietlalo jako morze
                 if(board.getCells()[i][j].isLand())  r.setFill(Paint.valueOf("00ff00"));
                 else if(board.getCells()[i][j].isBeach()) r.setFill(Paint.valueOf("ffff00"));
                 else if(oilVolume < 0.05 * maxValue) r.setFill(Paint.valueOf("ffffff"));
@@ -179,13 +177,13 @@ public class Controller {
     void initialize(){
         main_window.widthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-                createBoard(board,0);
+                createBoard(board,1);
             }
         });
 
         main_window.heightProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-                createBoard(board, 0);
+                createBoard(board, 1);
             }
         });
 
@@ -193,7 +191,7 @@ public class Controller {
         setAnimationSpeed(null);
 
 
-        createBoard(board,0);
+        createBoard(board,1);
 
 
     }
