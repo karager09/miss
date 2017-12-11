@@ -49,11 +49,31 @@ public class Controller {
     private FlowPane flowPane;
 
     @FXML
+    private Button whatToShow;
+
+
+    @FXML
+    public void setWhatToShow(ActionEvent e){
+        if(whatToShow.getText().equals("Subsurface")){
+            whatToShow.setText("Surface");
+            createBoard(board,1);}
+        else {
+            whatToShow.setText("Subsurface");
+            createBoard(board,0);
+        }
+    }
+
+    public int getWhatToShow() {
+        if(whatToShow.getText().equals("Subsurface")) return 0;
+        return 1;
+    }
+
+    @FXML
     public void rewind(ActionEvent e){
         for (int i = 0; i < slider_rewind.getValue(); i++) {
             board = Rules.applyRules(board);
         }
-        createBoard(board,1);
+        createBoard(board,getWhatToShow());
 
     }
 
@@ -85,7 +105,7 @@ public class Controller {
     @FXML
     public void nextState(ActionEvent e){
         board = Rules.applyRules(board);
-        createBoard(board,1);
+        createBoard(board,getWhatToShow());
 
     }
 
@@ -109,19 +129,10 @@ public class Controller {
         //max wartosc slupa oleju
         float maxValue = 0;
         if(n == 0){
-            for (int i = 0; i < board.getHeight(); i++) {
-                for (int j = 0; j < board.getWidth(); j++) {
-                    if(maxValue < board.getCells()[i][j].getOilHeight()) maxValue = board.getCells()[i][j].getOilHeight();
-                }
-            }
+            maxValue = board.getMaxValueSurface();
         }
         else {
-            for (int i = 0; i < board.getHeight(); i++) {
-                for (int j = 0; j < board.getWidth(); j++) {
-                    if (maxValue < board.getCells()[i][j].getOilBelowSurface())
-                        maxValue = board.getCells()[i][j].getOilBelowSurface();
-                }
-            }
+            maxValue = board.getMaxValueSubsurface();
         }
 
 
@@ -177,13 +188,13 @@ public class Controller {
     void initialize(){
         main_window.widthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-                createBoard(board,1);
+                createBoard(board,getWhatToShow());
             }
         });
 
         main_window.heightProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-                createBoard(board, 1);
+                createBoard(board, getWhatToShow());
             }
         });
 
@@ -191,7 +202,7 @@ public class Controller {
         setAnimationSpeed(null);
 
 
-        createBoard(board,1);
+        createBoard(board,getWhatToShow());
 
 
     }

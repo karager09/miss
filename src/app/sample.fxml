@@ -44,6 +44,11 @@
                </FlowPane.margin>
             </Slider>
             <TextField fx:id="show_max_value_textfield" editable="false" prefWidth="110.0" text="Max: " />
+            <Button id="whatToShow" fx:id="whatToShow" mnemonicParsing="false" onAction="#setWhatToShow" text="Subsurface">
+               <FlowPane.margin>
+                  <Insets />
+               </FlowPane.margin>
+            </Button>
          </children>
       </FlowPane>
    </top>

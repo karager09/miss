@@ -2,6 +2,10 @@ package board;
 
 import cell.Cell;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
+
 public class Board {
 
     public static int HEIGHT = 300, WIDTH = 300;
@@ -51,6 +55,95 @@ public class Board {
         }
     }
 
+    public float getMaxValueSurface(){
+        float maxValue = 0;
+        int amountOfThreads = 20;
+
+        ExecutorService executor = Executors.newFixedThreadPool(amountOfThreads);
+        List<Future<Float>> list = new ArrayList<Future<Float>>();
+
+        for (int i = 0; i < amountOfThreads; ++i){
+            Future<Float> future = executor.submit(new MyCallable((i / amountOfThreads) * getHeight(), (((i+1)/ amountOfThreads) * getHeight() - 1), true));
+            list.add(future);
+        }
+
+        for(Future<Float> fut : list){
+            try {
+                if(maxValue < fut.get()) maxValue = fut.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
+        executor.shutdown();
+
+        return maxValue;
+    }
+
+
+
+    class MyCallable implements Callable<Float> {
+        private int begin,end;
+        boolean isSurface;
+
+        public MyCallable(int begin, int end, boolean isSurface) {
+            this.begin = begin;
+            this.end = end;
+            this.isSurface = isSurface;
+        }
+
+        @Override
+        public Float call() {
+            float maxValue = 0;
+
+            if(isSurface == true) {
+                for (int i = begin; i < end; i++) {
+                    for (int j = 0; j < getWidth(); j++) {
+                        if (maxValue < getCells()[i][j].getOilHeight())
+                            maxValue = getCells()[i][j].getOilHeight();
+                    }
+                }
+            }
+            else {
+                for (int i = begin; i < end; i++) {
+                    for (int j = 0; j < getWidth(); j++) {
+                        if (maxValue < getCells()[i][j].getOilBelowSurface())
+                            maxValue = getCells()[i][j].getOilBelowSurface();
+                    }
+                }
+            }
+
+            return maxValue;
+        }
+    }
+
+
+
+    public float getMaxValueSubsurface(){
+
+        float maxValue = 0;
+        int amountOfThreads = 20;
+
+        ExecutorService executor = Executors.newFixedThreadPool(amountOfThreads);
+        List<Future<Float>> list = new ArrayList<Future<Float>>();
+
+        for (int i = 0; i < amountOfThreads; ++i){
+            Future<Float> future = executor.submit(new MyCallable((i / amountOfThreads) * getHeight(), (((i+1)/ amountOfThreads) * getHeight() - 1), false));
+            list.add(future);
+        }
+
+        for(Future<Float> fut : list){
+            try {
+                if(maxValue < fut.get()) maxValue = fut.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
+        executor.shutdown();
+        return maxValue;
+
+    }
 
     public int getHeight() {
         return HEIGHT;
