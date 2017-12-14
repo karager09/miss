@@ -29,7 +29,8 @@ import javafx.util.Duration;
 public class Controller {
 
 
-    Board board = new Board(1);
+    Board board = new Board();
+
 
     final Timeline timeline = new Timeline();
 
@@ -37,7 +38,7 @@ public class Controller {
     private Button rewind_btn, start_btn, next_state_btn;
 
     @FXML
-    private TextField show_max_value_textfield;
+    private TextField show_max_value_textfield, show_time_textfield, show_oil_subsurface_textfield, show_oil_surface_textfield;
 
     @FXML
     private Slider slider_rewind, slider_animation_speed;
@@ -72,6 +73,7 @@ public class Controller {
     public void rewind(ActionEvent e){
         for (int i = 0; i < slider_rewind.getValue(); i++) {
             board = Rules.applyRules(board);
+            Rules.timePassed += Rules.timeForOneStep;
         }
         createBoard(board,getWhatToShow());
 
@@ -105,6 +107,7 @@ public class Controller {
     @FXML
     public void nextState(ActionEvent e){
         board = Rules.applyRules(board);
+        Rules.timePassed += Rules.timeForOneStep;
         createBoard(board,getWhatToShow());
 
     }
@@ -128,14 +131,28 @@ public class Controller {
 
         //max wartosc slupa oleju
         float maxValue = 0;
-        if(n == 0){
+        /*if(n == 0){
             maxValue = board.getMaxValueSurface();
         }
         else {
             maxValue = board.getMaxValueSubsurface();
+        }*/
+
+        float amountOfOilSurface = 0, amountOfOilSubsurface = 0;
+
+        for (int i = 0; i < board.getHeight(); i++) {
+            for (int j = 0; j < board.getWidth(); j++) {
+                if(n == 0 && maxValue < board.getCells()[i][j].getOilHeight()) maxValue = board.getCells()[i][j].getOilHeight();
+                if(n == 1 && maxValue < board.getCells()[i][j].getOilBelowSurface()) maxValue = board.getCells()[i][j].getOilBelowSurface();
+
+                if(!board.getCells()[i][j].isLand() && !board.getCells()[i][j].isBeach())amountOfOilSurface += board.getCells()[i][j].getOilHeight();
+                if(!board.getCells()[i][j].isLand() && !board.getCells()[i][j].isBeach())amountOfOilSubsurface += board.getCells()[i][j].getOilBelowSurface();
+
+            }
         }
-
-
+        show_oil_surface_textfield.setText(String.format("Oil surface: %.2f b",amountOfOilSurface));
+        show_oil_subsurface_textfield.setText(String.format("Oil subsurface: %.2f b",amountOfOilSubsurface));
+        show_time_textfield.setText(String.format("Time: %.2f h",Rules.timePassed));
         show_max_value_textfield.setText(String.format("Max: %.2f",maxValue));
 
         int w = (int) (main_width / board.getWidth());

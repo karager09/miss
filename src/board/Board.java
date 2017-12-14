@@ -1,5 +1,6 @@
 package board;
 
+import Rules.Rules;
 import cell.Cell;
 
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.List;
 import java.util.concurrent.*;
 
 public class Board {
-
+    public final float[] whenWindAndCurrentChanges = new float[]{0f};
     public static int HEIGHT = 300, WIDTH = 300;
     private Cell[][] cells;
 
@@ -15,12 +16,12 @@ public class Board {
         return cells;
     }
 
-    public Board(int n) {
-        n = n-1;
-        if (BoardFromFile.cellsWithCurrentSpeed.length - 1 < n) n = BoardFromFile.cellsWithCurrentSpeed.length - 1;
+    public Board() {
 
         cells = new Cell[HEIGHT][WIDTH];
 
+        int n = 0;
+        while(n<whenWindAndCurrentChanges.length &&Rules.timePassed > whenWindAndCurrentChanges[n] && n < BoardFromFile.cellsWithCurrentSpeed.length) ++n;
 
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
@@ -54,7 +55,7 @@ public class Board {
             System.out.println("|");
         }
     }
-
+/*
     public float getMaxValueSurface(){
         float maxValue = 0;
         int amountOfThreads = 20;
@@ -143,7 +144,7 @@ public class Board {
         executor.shutdown();
         return maxValue;
 
-    }
+    }*/
 
     public int getHeight() {
         return HEIGHT;
