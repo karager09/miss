@@ -153,7 +153,7 @@ public class Controller {
                 Cell cell = board.getCells()[i][j];
 
                 if(n == 0 && maxValue < cell.getOilHeight()) maxValue = cell.getOilHeight();
-                if(n == 1 && (cell.isLand() || cell.isBeach()) && maxValue < cell.getOilBelowSurface()) maxValue = cell.getOilBelowSurface();
+                if(n == 1 && !cell.isLand() && !cell.isBeach() && maxValue < cell.getOilBelowSurface()) maxValue = cell.getOilBelowSurface();
 
                 if(!cell.isLand() && !cell.isBeach()) amountOfOilSurface += cell.getOilHeight();
                 if(!cell.isLand() && !cell.isBeach()) amountOfOilSubsurface += cell.getOilBelowSurface();
@@ -203,6 +203,8 @@ public class Controller {
                 if(board.getCells()[i][j].isLand())  r.setFill(Paint.valueOf("00ff00"));
                 else if(board.getCells()[i][j].isBeach()) r.setFill(Paint.valueOf("ffff00"));
                 else if(oilVolume == 0) r.setFill(Paint.valueOf("ffffff"));
+                else if(oilVolume < 0.008 * maxValue) r.setFill(Paint.valueOf("fefefe"));
+                else if(oilVolume < 0.016 * maxValue) r.setFill(Paint.valueOf("fdfdfd"));
                 else if(oilVolume < 0.025 * maxValue) r.setFill(Paint.valueOf("fcfcfc"));
                 else if(oilVolume < 0.05 * maxValue) r.setFill(Paint.valueOf("f9f9f9"));
                 else if(oilVolume < 0.075 * maxValue) r.setFill(Paint.valueOf("f5f5f5"));
