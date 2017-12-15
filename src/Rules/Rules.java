@@ -8,6 +8,8 @@ import static cell.Cell.directions.*;
 
 
 public class Rules {
+    public final static float lengthOfCellSide = 500;
+
     public static float timePassed = 0f;
     public final static float timeForOneStep = 1f;
 
@@ -21,9 +23,10 @@ public class Rules {
     final static float R = 0.16f; // wind speed to wind-driven current speed, between 0.03 and 0.16
 
     //shorline deposition
-    final static float maxBeachCapacity = 500f * 5f * 0.2f * 0.4f; //3D: length, width, depth, coeff
-    final static float maxLandCapacity = 500f * 3f * 0.2f * 0.15f;
-    final static float P = 0.2f; //3D Shorline Deposition Coeff
+    final static float maxBeachCapacity = 2f;//500f * 5f * 0.1f * 0.15f; //3D: length, width, depth, coeff
+    final static float maxLandCapacity = 5f;//500f * 3f * 0.2f * 0.3f;
+    final static float P_beach = 0.0005f; //3D Shorline Deposition Coeff
+    final static float P_land = 0.0015f;
     final static float lambda = 2 * 24 * 60; //half life (3D)
 
 
@@ -209,7 +212,8 @@ public class Rules {
 
         if(oldCell.isLand()){
 
-            float newValue = (float) (oldCell.oilBelowSurface * Math.exp(-timeForOneStep * (-Math.log(1/2)/lambda)) + P * oldCell.getOilHeight());
+            //float newValue = (float) (oldCell.oilBelowSurface * Math.exp(-timeForOneStep * (-Math.log(1/2)/lambda)) + P_land * oldCell.getOilHeight());
+            float newValue = oldCell.oilBelowSurface + P_land * oldCell.getOilHeight();
             if(newValue > maxLandCapacity) return maxLandCapacity;
             return newValue;
 
@@ -217,7 +221,8 @@ public class Rules {
 
         if(oldCell.isBeach()){
 
-            float newValue = (float) (oldCell.oilBelowSurface * Math.exp(-timeForOneStep * (-Math.log(1/2)/lambda)) + P * oldCell.getOilHeight());
+            //float newValue = (float) (oldCell.oilBelowSurface * Math.exp(-timeForOneStep * (-Math.log(1/2)/lambda)) + P_beach * oldCell.getOilHeight());
+            float newValue = oldCell.oilBelowSurface + P_beach * oldCell.getOilHeight();
             if(newValue > maxBeachCapacity) return maxBeachCapacity;
             return newValue;
 

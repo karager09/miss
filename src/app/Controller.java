@@ -44,7 +44,7 @@ public class Controller {
     private Button rewind_btn, start_btn, next_state_btn;
 
     @FXML
-    private TextField show_max_value_textfield, show_time_textfield, show_oil_subsurface_textfield, show_oil_surface_textfield, shorline_oil_textfield,shorline_deposition_textfield;
+    private TextField show_max_value_textfield, show_time_textfield, show_oil_subsurface_textfield, show_oil_surface_textfield, shorline_oil_textfield,shorline_deposition_textfield, area_textfield;
 
     @FXML
     private Slider slider_rewind, slider_animation_speed;
@@ -146,26 +146,44 @@ public class Controller {
         }*/
 
         float amountOfOilSurface = 0, amountOfOilSubsurface = 0, amountOfOilShorline = 0, amountOfOilShorlineBelow = 0;
+        int area = 0;
 
         for (int i = 0; i < board.getHeight(); i++) {
             for (int j = 0; j < board.getWidth(); j++) {
-                if(n == 0 && maxValue < board.getCells()[i][j].getOilHeight()) maxValue = board.getCells()[i][j].getOilHeight();
-                if(n == 1 && maxValue < board.getCells()[i][j].getOilBelowSurface()) maxValue = board.getCells()[i][j].getOilBelowSurface();
+                Cell cell = board.getCells()[i][j];
 
-                if(!board.getCells()[i][j].isLand() && !board.getCells()[i][j].isBeach())amountOfOilSurface += board.getCells()[i][j].getOilHeight();
-                if(!board.getCells()[i][j].isLand() && !board.getCells()[i][j].isBeach())amountOfOilSubsurface += board.getCells()[i][j].getOilBelowSurface();
-                if(board.getCells()[i][j].isLand() || board.getCells()[i][j].isBeach()) amountOfOilShorline +=board.getCells()[i][j].getOilHeight();
-                if(board.getCells()[i][j].isLand() || board.getCells()[i][j].isBeach()) amountOfOilShorlineBelow += board.getCells()[i][j].getOilBelowSurface();
+                if(n == 0 && maxValue < cell.getOilHeight()) maxValue = cell.getOilHeight();
+                if(n == 1 && (cell.isLand() || cell.isBeach()) && maxValue < cell.getOilBelowSurface()) maxValue = cell.getOilBelowSurface();
+
+                if(!cell.isLand() && !cell.isBeach()) amountOfOilSurface += cell.getOilHeight();
+                if(!cell.isLand() && !cell.isBeach()) amountOfOilSubsurface += cell.getOilBelowSurface();
+                if(cell.isLand() || cell.isBeach()) amountOfOilShorline += cell.getOilHeight();
+                if(cell.isLand() || cell.isBeach()) amountOfOilShorlineBelow += cell.getOilBelowSurface();
+                if(cell.getOilHeight() != 0) ++area;
 
             }
         }
         show_oil_surface_textfield.setText(String.format("Oil surface: %.2f b",amountOfOilSurface));
+        show_oil_surface_textfield.setPrefWidth(show_oil_surface_textfield.getText().length() * 7 + 15);
+
         show_oil_subsurface_textfield.setText(String.format("Oil subsurface: %.2f b",amountOfOilSubsurface));
-        shorline_oil_textfield.setText(String.format("Shorline: %.2f", amountOfOilShorline));
-        shorline_deposition_textfield.setText(String.format("Shorline below: %.2f",amountOfOilShorlineBelow));
+        show_oil_subsurface_textfield.setPrefWidth(show_oil_subsurface_textfield.getText().length() * 7 + 15);
+
+        shorline_oil_textfield.setText(String.format("Shorline: %.2f b", amountOfOilShorline));
+        shorline_oil_textfield.setPrefWidth(shorline_oil_textfield.getText().length() * 7 + 15);
+
+        shorline_deposition_textfield.setText(String.format("Shorline below: %.2f b",amountOfOilShorlineBelow));
+        shorline_deposition_textfield.setPrefWidth(shorline_deposition_textfield.getText().length() * 7 + 15);
 
         show_time_textfield.setText(String.format("Time: %.2f h",Rules.timePassed));
-        show_max_value_textfield.setText(String.format("Max: %.2f",maxValue));
+        show_time_textfield.setPrefWidth(show_time_textfield.getText().length() * 7 + 20);
+
+        show_max_value_textfield.setText(String.format("Max: %.2f b",maxValue));
+        show_max_value_textfield.setPrefWidth(show_max_value_textfield.getText().length() * 7 + 25);
+
+        area_textfield.setText(String.format("Area: %.1f", area * Rules.lengthOfCellSide * Rules.lengthOfCellSide / 1000000));
+        area_textfield.setPrefWidth(area_textfield.getText().length() * 7 + 20);
+
 
         int w = (int) (main_width / board.getWidth());
         int h = (int) (main_height / board.getHeight());
@@ -184,25 +202,46 @@ public class Controller {
                 if(maxValue == 0) maxValue=1;// zeby jak sa same zera wyswietlalo jako morze
                 if(board.getCells()[i][j].isLand())  r.setFill(Paint.valueOf("00ff00"));
                 else if(board.getCells()[i][j].isBeach()) r.setFill(Paint.valueOf("ffff00"));
-                else if(oilVolume < 0.05 * maxValue) r.setFill(Paint.valueOf("ffffff"));
+                else if(oilVolume == 0) r.setFill(Paint.valueOf("ffffff"));
+                else if(oilVolume < 0.025 * maxValue) r.setFill(Paint.valueOf("fcfcfc"));
+                else if(oilVolume < 0.05 * maxValue) r.setFill(Paint.valueOf("f9f9f9"));
+                else if(oilVolume < 0.075 * maxValue) r.setFill(Paint.valueOf("f5f5f5"));
                 else if(oilVolume < 0.10 * maxValue)r.setFill(Paint.valueOf("f2f2f2"));
+                else if(oilVolume < 0.125 * maxValue)r.setFill(Paint.valueOf("ececec"));
                 else if(oilVolume < 0.15 * maxValue)r.setFill(Paint.valueOf("e6e6e6"));
+                else if(oilVolume < 0.175 * maxValue)r.setFill(Paint.valueOf("e0e0e0"));
                 else if(oilVolume < 0.20 * maxValue)r.setFill(Paint.valueOf("d9d9d9"));
+                else if(oilVolume < 0.225 * maxValue)r.setFill(Paint.valueOf("d2d2d2"));
                 else if(oilVolume < 0.25 * maxValue)r.setFill(Paint.valueOf("cccccc"));
+                else if(oilVolume < 0.275 * maxValue)r.setFill(Paint.valueOf("c5c5c5"));
                 else if(oilVolume < 0.30 * maxValue)r.setFill(Paint.valueOf("bfbfbf"));
+                else if(oilVolume < 0.325 * maxValue)r.setFill(Paint.valueOf("b9b9b9"));
                 else if(oilVolume < 0.35 * maxValue)r.setFill(Paint.valueOf("b3b3b3"));
+                else if(oilVolume < 0.375 * maxValue)r.setFill(Paint.valueOf("acacac"));
                 else if(oilVolume < 0.40 * maxValue)r.setFill(Paint.valueOf("a6a6a6"));
+                else if(oilVolume < 0.425 * maxValue)r.setFill(Paint.valueOf("a0a0a0"));
                 else if(oilVolume < 0.45 * maxValue)r.setFill(Paint.valueOf("999999"));
+                else if(oilVolume < 0.475 * maxValue)r.setFill(Paint.valueOf("929292"));
                 else if(oilVolume < 0.50 * maxValue)r.setFill(Paint.valueOf("8c8c8c"));
+                else if(oilVolume < 0.525 * maxValue)r.setFill(Paint.valueOf("868686"));
                 else if(oilVolume < 0.55 * maxValue)r.setFill(Paint.valueOf("808080"));
+                else if(oilVolume < 0.575 * maxValue)r.setFill(Paint.valueOf("797979"));
                 else if(oilVolume < 0.60 * maxValue)r.setFill(Paint.valueOf("737373"));
+                else if(oilVolume < 0.635 * maxValue)r.setFill(Paint.valueOf("6c6c6c"));
                 else if(oilVolume < 0.65 * maxValue)r.setFill(Paint.valueOf("666666"));
+                else if(oilVolume < 0.675 * maxValue)r.setFill(Paint.valueOf("606060"));
                 else if(oilVolume < 0.70 * maxValue)r.setFill(Paint.valueOf("595959"));
+                else if(oilVolume < 0.725 * maxValue)r.setFill(Paint.valueOf("535353"));
                 else if(oilVolume < 0.75 * maxValue)r.setFill(Paint.valueOf("4d4d4d"));
+                else if(oilVolume < 0.775 * maxValue)r.setFill(Paint.valueOf("464646"));
                 else if(oilVolume < 0.80 * maxValue)r.setFill(Paint.valueOf("404040"));
+                else if(oilVolume < 0.825 * maxValue)r.setFill(Paint.valueOf("393939"));
                 else if(oilVolume < 0.85 * maxValue)r.setFill(Paint.valueOf("333333"));
+                else if(oilVolume < 0.875 * maxValue)r.setFill(Paint.valueOf("2c2c2c"));
                 else if(oilVolume < 0.90 * maxValue)r.setFill(Paint.valueOf("262626"));
+                else if(oilVolume < 0.925 * maxValue)r.setFill(Paint.valueOf("202020"));
                 else if(oilVolume < 0.95 * maxValue)r.setFill(Paint.valueOf("1a1a1a"));
+                else if(oilVolume < 0.975 * maxValue)r.setFill(Paint.valueOf("0d0d0d"));
                 else r.setFill(Paint.valueOf("000000"));
 
 

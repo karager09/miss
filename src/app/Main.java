@@ -25,7 +25,7 @@ public class Main extends Application {
 
         FXMLLoader loader = new FXMLLoader();
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        loader.setLocation(this.getClass().getResource("sample.fxml"));
+        loader.setLocation(this.getClass().getResource("appearance.fxml"));
 
         Pane pane = loader.load();
         Scene scene = new Scene(pane);

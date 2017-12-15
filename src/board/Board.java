@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 public class Board {
 
     public final float[] whenWindAndCurrentChanges = new float[]{};
-    public final int[] temperature = new int[]{273};
+    public final int[] temperature = new int[]{273,273};
     public static int HEIGHT = 300, WIDTH = 300;
     private Cell[][] cells;
 
