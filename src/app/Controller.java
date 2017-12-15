@@ -10,6 +10,8 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -26,6 +28,10 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+
+
+
+
 public class Controller {
 
 
@@ -38,7 +44,7 @@ public class Controller {
     private Button rewind_btn, start_btn, next_state_btn;
 
     @FXML
-    private TextField show_max_value_textfield, show_time_textfield, show_oil_subsurface_textfield, show_oil_surface_textfield;
+    private TextField show_max_value_textfield, show_time_textfield, show_oil_subsurface_textfield, show_oil_surface_textfield, shorline_oil_textfield,shorline_deposition_textfield;
 
     @FXML
     private Slider slider_rewind, slider_animation_speed;
@@ -116,6 +122,7 @@ public class Controller {
 
     public void createBoard(Board board, int n) {// jak 0 to pokazuje powierzchnie
 
+
         //odpowiedzialne za odpowiednia wysokosc i szerokosc okna
         double main_height = ((int)((main_window.getHeight() - 50)/board.getHeight())*board.getHeight());
         double main_width = ((int)((main_window.getWidth() - 5)/board.getWidth())*board.getWidth());
@@ -138,7 +145,7 @@ public class Controller {
             maxValue = board.getMaxValueSubsurface();
         }*/
 
-        float amountOfOilSurface = 0, amountOfOilSubsurface = 0;
+        float amountOfOilSurface = 0, amountOfOilSubsurface = 0, amountOfOilShorline = 0, amountOfOilShorlineBelow = 0;
 
         for (int i = 0; i < board.getHeight(); i++) {
             for (int j = 0; j < board.getWidth(); j++) {
@@ -147,11 +154,16 @@ public class Controller {
 
                 if(!board.getCells()[i][j].isLand() && !board.getCells()[i][j].isBeach())amountOfOilSurface += board.getCells()[i][j].getOilHeight();
                 if(!board.getCells()[i][j].isLand() && !board.getCells()[i][j].isBeach())amountOfOilSubsurface += board.getCells()[i][j].getOilBelowSurface();
+                if(board.getCells()[i][j].isLand() || board.getCells()[i][j].isBeach()) amountOfOilShorline +=board.getCells()[i][j].getOilHeight();
+                if(board.getCells()[i][j].isLand() || board.getCells()[i][j].isBeach()) amountOfOilShorlineBelow += board.getCells()[i][j].getOilBelowSurface();
 
             }
         }
         show_oil_surface_textfield.setText(String.format("Oil surface: %.2f b",amountOfOilSurface));
         show_oil_subsurface_textfield.setText(String.format("Oil subsurface: %.2f b",amountOfOilSubsurface));
+        shorline_oil_textfield.setText(String.format("Shorline: %.2f", amountOfOilShorline));
+        shorline_deposition_textfield.setText(String.format("Shorline below: %.2f",amountOfOilShorlineBelow));
+
         show_time_textfield.setText(String.format("Time: %.2f h",Rules.timePassed));
         show_max_value_textfield.setText(String.format("Max: %.2f",maxValue));
 
@@ -197,6 +209,8 @@ public class Controller {
                 flowPane.getChildren().add(r);
             }
         }
+
+
 
     }
 

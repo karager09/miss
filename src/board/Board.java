@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.concurrent.*;
 
 public class Board {
-    public final float[] whenWindAndCurrentChanges = new float[]{0f};
+
+    public final float[] whenWindAndCurrentChanges = new float[]{};
+    public final int[] temperature = new int[]{273};
     public static int HEIGHT = 300, WIDTH = 300;
     private Cell[][] cells;
 
@@ -21,11 +23,11 @@ public class Board {
         cells = new Cell[HEIGHT][WIDTH];
 
         int n = 0;
-        while(n<whenWindAndCurrentChanges.length &&Rules.timePassed > whenWindAndCurrentChanges[n] && n < BoardFromFile.cellsWithCurrentSpeed.length) ++n;
+        while(n<whenWindAndCurrentChanges.length && Rules.timePassed >= whenWindAndCurrentChanges[n] && n < BoardFromFile.cellsWithCurrentSpeed.length) ++n;
 
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                cells[i][j] = new Cell(BoardFromFile.cellsWithLandType[i][j], BoardFromFile.cellsWithCurrentSpeed[n][i][j], BoardFromFile.cellsWithWindSpeed[n][i][j],BoardFromFile.cellsWithWindDirection[n][i][j],BoardFromFile.cellsWithCurrentDirection[n][i][j],20);
+                cells[i][j] = new Cell(BoardFromFile.cellsWithLandType[i][j], BoardFromFile.cellsWithCurrentSpeed[n][i][j], BoardFromFile.cellsWithWindSpeed[n][i][j],BoardFromFile.cellsWithWindDirection[n][i][j],BoardFromFile.cellsWithCurrentDirection[n][i][j],temperature[n]);
             }
         }
 

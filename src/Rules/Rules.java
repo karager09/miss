@@ -9,12 +9,11 @@ import static cell.Cell.directions.*;
 
 public class Rules {
     public static float timePassed = 0f;
-
+    public final static float timeForOneStep = 1f;
 
     //evaporation
     final static float p = 0f; //oil evaporation coefficient
-    final static float timeStep = 1;
-    final static float temperature = 273;// in Kelvin
+    final static float temperature = 293;// in Kelvin
 
     //wind and current
     final static float windInfluenceOnOtherDirections = 0.25f;
@@ -22,7 +21,12 @@ public class Rules {
     final static float R = 0.16f; // wind speed to wind-driven current speed, between 0.03 and 0.16
 
     //shorline deposition
-    final static float maxBeachCapacity = 500f * 20f * 0.2f * 0.3f; //3D: length, width, depth, coeff
+    final static float maxBeachCapacity = 500f * 5f * 0.2f * 0.4f; //3D: length, width, depth, coeff
+    final static float maxLandCapacity = 500f * 3f * 0.2f * 0.15f;
+    final static float P = 0.2f; //3D Shorline Deposition Coeff
+    final static float lambda = 2 * 24 * 60; //half life (3D)
+
+
 
     //vertical dispersion
     final static float Rs = 0.0001f; //3D
@@ -33,7 +37,7 @@ public class Rules {
     final static float d = 0.22f; //from 3D, coeff to gravity 0.22 or 0.18
     final static float borderWanishRatio = 0.89f;//jesli natkiemy sie na granice to przyjmujemy ze ma 90% tyle ropy co nasza oryginalna komorka
 
-    public final static float timeForOneStep = 0.25f;
+
 
 
 
@@ -47,6 +51,7 @@ public class Rules {
 
         float n,ne,e,se,s,sw,w,nw;
 
+        float oilToSubsurface = Rs * cells[i][j].getOilHeight() * cells[i][j].windSpeed / BoardFromFile.maxWindSpeedEverObserved;
         float windCoeff = R * cells[i][j].windSpeed / BoardFromFile.maxWindSpeedEverObserved;
         float currentCoeff = cells[i][j].currentSpeed / BoardFromFile.maxCurrentSpeedEverObserved;
 
@@ -93,25 +98,51 @@ public class Rules {
         w += tableOfCoeff[(14 - numberOfDirection) % 8];
         nw += tableOfCoeff[(15 - numberOfDirection) % 8];
 
+        //System.out.println(n + ", " + ne + ", " + e + ", " + se + ", " + s + ", " + sw + ", " + w + ", " + nw);
 
-
-        if(oldCell.isLand()) return 0;
         //jesli natykamy sie na lad, to traktujemy go jakby mial tyle ropy co dana komorka co zapobiega jej "gubienu" sie na ladzie
 
-        if(oldCell.isBeach()) return 0;
+        if(oldCell.isBeach() || oldCell.isLand()) {
+            float sumOfDifference = (i > 0?(cells[i-1][j].isLand()||cells[i-1][j].isBeach() ? oldValue:cells[i-1][j].getOilHeight() * (1+n)) : ifBorder);
+            sumOfDifference += (i < board.getHeight()-1? (cells[i+1][j].isLand()||cells[i+1][j].isBeach() ? oldValue:cells[i+1][j].getOilHeight() * (1+s)):ifBorder);
+            sumOfDifference += (j > 0? (cells[i][j-1].isLand()||cells[i][j-1].isBeach() ? oldValue: cells[i][j-1].getOilHeight()*(1+w)):ifBorder);
+            sumOfDifference += (j < board.getWidth()-1? (cells[i][j+1].isLand()||cells[i][j+1].isBeach() ? oldValue:cells[i][j+1].getOilHeight() * (1+e)):ifBorder) - 4 * oldValue;
+            sumOfDifference += d * (i > 0 && j>0?(cells[i-1][j-1].isLand()||cells[i-1][j-1].isBeach() ? oldValue:cells[i-1][j-1].getOilHeight()*(1+nw)) : ifBorder);
+            sumOfDifference += d * (i < board.getHeight()-1 && j>0? (cells[i+1][j-1].isLand()||cells[i+1][j-1].isBeach() ? oldValue:cells[i+1][j-1].getOilHeight()*(1+sw)):ifBorder);
+            sumOfDifference += d *(i > 0 && j < board.getWidth()-1? (cells[i-1][j+1].isLand()||cells[i-1][j+1].isBeach() ? oldValue:cells[i-1][j+1].getOilHeight()*(1+ne)):ifBorder);
+            sumOfDifference += d * ((i < board.getHeight()-1 && j < board.getWidth()-1? (cells[i+1][j+1].isLand()||cells[i+1][j+1].isBeach() ? oldValue: cells[i+1][j+1].getOilHeight()*(1+se)):ifBorder) - 4 * oldValue);
+
+            sumOfDifference += -p * timeForOneStep * temperature;
+            float heightOfOli = oldCell.getOilHeight() + m * (sumOfDifference) - (ruleForSubsurface(board,i,j) - oldCell.getOilBelowSurface());
+
+            return heightOfOli;
+
+        }
 
 
-        float sumOfDifference = (i > 0?(cells[i-1][j].isLand()||cells[i-1][j].isBeach() ? oldValue:cells[i-1][j].getOilHeight() * (1+n)) : ifBorder);
+        float sumOfDifference = (i > 0?cells[i-1][j].getOilHeight() * (1+n) : ifBorder);
+        sumOfDifference += (i < board.getHeight()-1?cells[i+1][j].getOilHeight() * (1+s):ifBorder);
+        sumOfDifference += (j > 0? cells[i][j-1].getOilHeight()*(1+w):ifBorder);
+        sumOfDifference += (j < board.getWidth()-1? cells[i][j+1].getOilHeight() * (1+e):ifBorder) - 4 * oldValue;
+        sumOfDifference += d * (i > 0 && j>0?cells[i-1][j-1].getOilHeight()*(1+nw) : ifBorder);
+        sumOfDifference += d * (i < board.getHeight()-1 && j>0?cells[i+1][j-1].getOilHeight()*(1+sw):ifBorder);
+        sumOfDifference += d *(i > 0 && j < board.getWidth()-1? cells[i-1][j+1].getOilHeight()*(1+ne):ifBorder);
+        sumOfDifference += d * ((i < board.getHeight()-1 && j < board.getWidth()-1? cells[i+1][j+1].getOilHeight()*(1+se):ifBorder) - 4 * oldValue);
+
+
+
+       /* float sumOfDifference = (i > 0?(cells[i-1][j].isLand()||cells[i-1][j].isBeach() ? oldValue:cells[i-1][j].getOilHeight() * (1+n)) : ifBorder);
         sumOfDifference += (i < board.getHeight()-1? (cells[i+1][j].isLand()||cells[i+1][j].isBeach() ? oldValue:cells[i+1][j].getOilHeight() * (1+s)):ifBorder);
         sumOfDifference += (j > 0? (cells[i][j-1].isLand()||cells[i][j-1].isBeach() ? oldValue: cells[i][j-1].getOilHeight()*(1+w)):ifBorder);
         sumOfDifference += (j < board.getWidth()-1? (cells[i][j+1].isLand()||cells[i][j+1].isBeach() ? oldValue:cells[i][j+1].getOilHeight() * (1+e)):ifBorder) - 4 * oldValue;
         sumOfDifference += d * (i > 0 && j>0?(cells[i-1][j-1].isLand()||cells[i-1][j-1].isBeach() ? oldValue:cells[i-1][j-1].getOilHeight()*(1+nw)) : ifBorder);
         sumOfDifference += d * (i < board.getHeight()-1 && j>0? (cells[i+1][j-1].isLand()||cells[i+1][j-1].isBeach() ? oldValue:cells[i+1][j-1].getOilHeight()*(1+sw)):ifBorder);
         sumOfDifference += d *(i > 0 && j < board.getWidth()-1? (cells[i-1][j+1].isLand()||cells[i-1][j+1].isBeach() ? oldValue:cells[i-1][j+1].getOilHeight()*(1+ne)):ifBorder);
-        sumOfDifference += d * ((i < board.getHeight()-1 && j < board.getWidth()-1? (cells[i+1][j+1].isLand()||cells[i+1][j+1].isBeach() ? oldValue: cells[i+1][j+1].getOilHeight()*(1+se)):ifBorder) - 4 * oldValue);
+        sumOfDifference += d * ((i < board.getHeight()-1 && j < board.getWidth()-1? (cells[i+1][j+1].isLand()||cells[i+1][j+1].isBeach() ? oldValue: cells[i+1][j+1].getOilHeight()*(1+se)):ifBorder) - 4 * oldValue);*/
 
-        sumOfDifference += -p * timeStep * temperature;
-        float heightOfOli = oldCell.getOilHeight() + m * (sumOfDifference);
+
+        sumOfDifference += -p * timeForOneStep * temperature;
+        float heightOfOli = oldCell.getOilHeight() + m * (sumOfDifference) - oilToSubsurface;
 
         return heightOfOli;
     }
@@ -176,10 +207,21 @@ public class Rules {
 
 
 
-        if(oldCell.isLand()) return 0;
-        //jesli natykamy sie na lad, to traktujemy go jakby mial tyle ropy co dana komorka co zapobiega jej "gubienu" sie na ladzie
+        if(oldCell.isLand()){
 
-        if(oldCell.isBeach()) return 0;
+            float newValue = (float) (oldCell.oilBelowSurface * Math.exp(-timeForOneStep * (-Math.log(1/2)/lambda)) + P * oldCell.getOilHeight());
+            if(newValue > maxLandCapacity) return maxLandCapacity;
+            return newValue;
+
+        }
+
+        if(oldCell.isBeach()){
+
+            float newValue = (float) (oldCell.oilBelowSurface * Math.exp(-timeForOneStep * (-Math.log(1/2)/lambda)) + P * oldCell.getOilHeight());
+            if(newValue > maxBeachCapacity) return maxBeachCapacity;
+            return newValue;
+
+        }
 
 
         float sumOfDifference = (i > 0?(cells[i-1][j].isLand()||cells[i-1][j].isBeach() ? oldValue:cells[i-1][j].getOilBelowSurface() * (1+n)) : ifBorder);
