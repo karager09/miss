@@ -11,11 +11,20 @@ public class Rules {
     public final static float lengthOfCellSide = 500;
 
     public static float timePassed = 0f;
-    public final static float timeForOneStep = 1f;
+    public final static float timeForOneStep = 1.1f;
 
-    //evaporation
-    final static float p = 0f; //oil evaporation coefficient
+    //evaporation, CA based
+    //final static float p = 0f; //oil evaporation coefficient
     final static float temperature = 293;// in Kelvin
+    final static float percentD = 7.87f; //percentage distilled at 180 oC
+
+
+
+    //dissolution (rozpuszczanie), CA based model
+    final static float K = 0.000003f; // coefficient
+    final static float S0 = 10f; //initial solubility, TRZEBA SPRAWDZIC!!
+    final static float density = 0.8787f; // gestosc (g/cm^3)
+
 
     //wind and current
     final static float windInfluenceOnOtherDirections = 0.25f;
@@ -34,6 +43,11 @@ public class Rules {
     //vertical dispersion
     final static float Rs = 0.0001f; //3D
     final static float windCoeffForSubsurface = 0.1f;
+    final static float waveLength = 40; // CA based
+    final static float waveHeight = 1.5f;//CA based
+    final static float wavePeriod = 20;
+    final static double Ez = 0.028 * (waveHeight*waveHeight/wavePeriod) * Math.exp(-4*Math.PI/waveLength);
+    //final static double Ez = 100; // (cm^2 /s)
 
 
     final static float m = 0.1f; //from Cellular Automata Based Model for the Prediction of Oil Slicks Behavior 0.0034, gravity, from Oil Spill Modeling Using 3D: 0.098
@@ -54,7 +68,7 @@ public class Rules {
 
         float n,ne,e,se,s,sw,w,nw;
 
-        float oilToSubsurface = Rs * cells[i][j].getOilHeight() * cells[i][j].windSpeed / BoardFromFile.maxWindSpeedEverObserved;
+        float oilToSubsurface = (float) (0.1 * (Rs * cells[i][j].getOilHeight() * cells[i][j].windSpeed / BoardFromFile.maxWindSpeedEverObserved) + 0.9 * m * Ez * (oldCell.getOilHeight() - oldCell.getOilBelowSurface()));
         float windCoeff = R * cells[i][j].windSpeed / BoardFromFile.maxWindSpeedEverObserved;
         float currentCoeff = cells[i][j].currentSpeed / BoardFromFile.maxCurrentSpeedEverObserved;
 
@@ -115,7 +129,7 @@ public class Rules {
             sumOfDifference += d *(i > 0 && j < board.getWidth()-1? (cells[i-1][j+1].isLand()||cells[i-1][j+1].isBeach() ? oldValue:cells[i-1][j+1].getOilHeight()*(1+ne)):ifBorder);
             sumOfDifference += d * ((i < board.getHeight()-1 && j < board.getWidth()-1? (cells[i+1][j+1].isLand()||cells[i+1][j+1].isBeach() ? oldValue: cells[i+1][j+1].getOilHeight()*(1+se)):ifBorder) - 4 * oldValue);
 
-            sumOfDifference += -p * timeForOneStep * temperature;
+            //sumOfDifference += -p * timeForOneStep * temperature;
             float heightOfOli = oldCell.getOilHeight() + m * (sumOfDifference) - (ruleForSubsurface(board,i,j) - oldCell.getOilBelowSurface());
 
             return heightOfOli;
@@ -144,10 +158,15 @@ public class Rules {
         sumOfDifference += d * ((i < board.getHeight()-1 && j < board.getWidth()-1? (cells[i+1][j+1].isLand()||cells[i+1][j+1].isBeach() ? oldValue: cells[i+1][j+1].getOilHeight()*(1+se)):ifBorder) - 4 * oldValue);*/
 
 
-        sumOfDifference += -p * timeForOneStep * temperature;
+        //sumOfDifference += -p * timeForOneStep * temperature;
         float heightOfOli = oldCell.getOilHeight() + m * (sumOfDifference) - oilToSubsurface;
+//        float dissolution = 0.001 * (K * (lengthOfCellSide*lengthOfCellSide)* S0 * Math.exp(-0.1 * timePassed)) * timeForOneStep / (density * 119.24); //odejmujemy ile sie rozpuscilo, 119- zamieniamy na barrel
 
-        return heightOfOli;
+        float evaporation = (float) (0.0000005 * (0.165 * percentD + 0.45 * (temperature - 15)) * Math.log(timeForOneStep*60*60) * oldValue);
+       // float evaporation = 0;
+        heightOfOli = heightOfOli - evaporation;
+        if (heightOfOli > 0) return heightOfOli;
+        return 0;
     }
 
 
@@ -157,7 +176,8 @@ public class Rules {
         Cell oldCell = cells[i][j];
         float oldValue = oldCell.getOilBelowSurface();
         float ifBorder = borderWanishRatio * oldValue;
-        float oilFromSurface = Rs * cells[i][j].getOilHeight() * cells[i][j].windSpeed / BoardFromFile.maxWindSpeedEverObserved;
+        float oilFromSurface = (float) (0.1 * (Rs * cells[i][j].getOilHeight() * cells[i][j].windSpeed / BoardFromFile.maxWindSpeedEverObserved) + 0.9 * m * Ez * (oldCell.getOilHeight() - oldCell.getOilBelowSurface()));
+
 
 
         float n,ne,e,se,s,sw,w,nw;
@@ -240,7 +260,13 @@ public class Rules {
 
         float subsurfaceOil = oilFromSurface + oldCell.getOilBelowSurface() + m * (sumOfDifference);
 
-        return subsurfaceOil;
+        double dissolution=  oldCell.oilBelowSurface * (K * (lengthOfCellSide*lengthOfCellSide)* S0 * Math.exp(-0.1 * timePassed)) * (timeForOneStep * 60 * 60) / (density * 119.24); //odejmujemy ile sie rozpuscilo, 119- zamieniamy na barrel
+
+        subsurfaceOil = subsurfaceOil - (float)dissolution;
+        if(subsurfaceOil > 0) return subsurfaceOil;
+        return 0;
+
+        //return subsurfaceOil;
     }
 
     public static Board applyRules(Board board){

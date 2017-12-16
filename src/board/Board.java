@@ -36,7 +36,7 @@ public class Board {
 
 
 
-        cells[HEIGHT/2][WIDTH/2].setOilHeight(10000f);
+        cells[HEIGHT/2][WIDTH/2].setOilHeight(100000f);
 
         //dla proby ustawiamy jakis lad
 //        for (int i = HEIGHT/5; i < HEIGHT/5*2; i++) {
