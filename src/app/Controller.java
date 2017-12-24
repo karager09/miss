@@ -19,10 +19,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
@@ -52,8 +49,11 @@ public class Controller {
     @FXML
     private BorderPane main_window;
 
+    //@FXML
+    //private FlowPane flowPane;
+
     @FXML
-    private FlowPane flowPane;
+    private TilePane tilePane;
 
     @FXML
     private Button whatToShow;
@@ -92,8 +92,30 @@ public class Controller {
 //        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(10000/slider_animation_speed.getValue()),
 //                event -> nextState(null)));
 
-        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(500*slider_animation_speed.getValue()),
-                event -> nextState(null)));
+//        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(500*slider_animation_speed.getValue()),
+//                event -> nextState(null)));
+
+
+
+        if(slider_animation_speed.getValue() < 4)
+        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(300),
+                event -> {
+                    for (int i = 0; i < slider_animation_speed.getValue(); i++) {
+                        nextState(null);
+                    }}));
+        else if(slider_animation_speed.getValue() < 7){
+            timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(500),
+                    event -> {
+                        for (int i = 0; i < slider_animation_speed.getValue(); i++) {
+                            nextState(null);
+                        }}));
+        } else {
+            timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(750),
+                    event -> {
+                        for (int i = 0; i < slider_animation_speed.getValue(); i++) {
+                            nextState(null);
+                        }}));
+        }
 
         start_btn.setText("Start");
     }
@@ -131,10 +153,14 @@ public class Controller {
         if(main_height > main_width) main_height = main_width;
         else main_width = main_height;
 
-        flowPane.getChildren().clear();
-        flowPane.setMaxWidth(main_width);
-        flowPane.setPrefWidth(main_width);
-        flowPane.setMinWidth(main_width);
+//        flowPane.getChildren().clear();
+//        flowPane.setMaxWidth(main_width);
+//        flowPane.setPrefWidth(main_width);
+//        flowPane.setMinWidth(main_width);
+
+        tilePane.setMaxWidth(main_width);
+        tilePane.setPrefWidth(main_width);
+        tilePane.setMinWidth(main_width);
 
         //max wartosc slupa oleju
         float maxValue = 0;
@@ -188,12 +214,14 @@ public class Controller {
         int w = (int) (main_width / board.getWidth());
         int h = (int) (main_height / board.getHeight());
 
-
+        boolean needForChangeSize = ((Rectangle)tilePane.getChildren().get(0)).getWidth() != w ? true : false;
         for (int i = 0; i < board.getHeight(); i++) {
             for (int j = 0; j < board.getWidth(); j++) {
-                Rectangle r = new Rectangle();
+                Rectangle r = (Rectangle)tilePane.getChildren().get(i*Board.HEIGHT + j);
+                //Rectangle r = new Rectangle();
+                if(needForChangeSize) {
                 r.setWidth(w);
-                r.setHeight(h);
+                r.setHeight(h);}
 
 
                 float oilVolume;
@@ -247,7 +275,8 @@ public class Controller {
                 else r.setFill(Paint.valueOf("000000"));
 
 
-                flowPane.getChildren().add(r);
+                //tilePane.getChildren().add(r);
+
             }
         }
 
@@ -258,10 +287,10 @@ public class Controller {
 
     @FXML
     void initialize(){
-        main_window.widthProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+        main_window.widthProperty().addListener((ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) -> {
+
                 createBoard(board,getWhatToShow());
-            }
+
         });
 
         main_window.heightProperty().addListener(new ChangeListener<Number>() {
@@ -273,9 +302,16 @@ public class Controller {
         timeline.setCycleCount(Animation.INDEFINITE);
         setAnimationSpeed(null);
 
+        tilePane.setPrefColumns(Board.WIDTH);
+        tilePane.setPrefRows(Board.HEIGHT);
+
+        for (int i = 0; i < Board.HEIGHT; i++) {
+            for (int j = 0; j < Board.WIDTH; j++) {
+                tilePane.getChildren().add(new Rectangle());
+            }
+        }
 
         createBoard(board,getWhatToShow());
-
 
     }
 

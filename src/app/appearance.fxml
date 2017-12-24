@@ -7,11 +7,9 @@
 <?import javafx.scene.effect.Glow?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.TilePane?>
 
-<BorderPane fx:id="main_window" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="805.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
-   <center>
-      <FlowPane fx:id="flowPane" prefHeight="800.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
-   </center>
+<BorderPane fx:id="main_window" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="950.0" prefWidth="805.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
    <top>
       <FlowPane BorderPane.alignment="CENTER">
          <children>
@@ -20,7 +18,7 @@
                   <Insets left="10.0" right="10.0" top="10.0" />
                </FlowPane.margin>
             </Button>
-            <Slider fx:id="slider_animation_speed" blockIncrement="5.0" majorTickUnit="100.0" max="5.0" min="1.0" minorTickCount="50" onMouseReleased="#setAnimationSpeed" showTickMarks="true" value="2.0">
+            <Slider fx:id="slider_animation_speed" blockIncrement="5.0" majorTickUnit="2.0" max="10.0" min="1.0" minorTickCount="1" onMouseReleased="#setAnimationSpeed" showTickMarks="true" value="1.0">
                <FlowPane.margin>
                   <Insets left="10.0" right="10.0" top="10.0" />
                </FlowPane.margin>
@@ -84,4 +82,7 @@
          </children>
       </FlowPane>
    </top>
+   <center>
+      <TilePane fx:id="tilePane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
 </BorderPane>
