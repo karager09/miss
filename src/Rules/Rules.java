@@ -15,44 +15,44 @@ public class Rules {
 
     //evaporation, CA based
     //final static float p = 0f; //oil evaporation coefficient
-    final static float temperature = 293;// in Kelvin
-    final static float percentD = 7.87f; //percentage distilled at 180 oC
+    private final static float temperature = 293;// in Kelvin
+    private final static float percentD = 7.87f; //percentage distilled at 180 oC
 
 
 
     //dissolution (rozpuszczanie), CA based model
-    final static float K = 0.000003f; // coefficient
-    final static float S0 = 10f; //initial solubility, TRZEBA SPRAWDZIC!!
-    final static float density = 0.8787f; // gestosc (g/cm^3)
+    private final static float K = 0.000003f; // coefficient
+    private final static float S0 = 10f; //initial solubility, TRZEBA SPRAWDZIC!!
+    private final static float density = 0.8787f; // gestosc (g/cm^3)
 
 
     //wind and current
-    final static float windInfluenceOnOtherDirections = 0.25f;
-    final static float currentInfluenceOnOtherDirections = 0.1f;
-    final static float R = 0.16f; // wind speed to wind-driven current speed, between 0.03 and 0.16
+    private final static float windInfluenceOnOtherDirections = 0.05f;//0.25
+    private final static float currentInfluenceOnOtherDirections = 0.1f;
+    private final static float R = 0.16f; // wind speed to wind-driven current speed, between 0.03 and 0.16
 
     //shorline deposition
-    final static float maxBeachCapacity = 2f;//500f * 5f * 0.1f * 0.15f; //3D: length, width, depth, coeff
-    final static float maxLandCapacity = 5f;//500f * 3f * 0.2f * 0.3f;
-    final static float P_beach = 0.0005f; //3D Shorline Deposition Coeff
-    final static float P_land = 0.0015f;
-    final static float lambda = 2 * 24 * 60; //half life (3D)
+    private final static float maxBeachCapacity = 2f;//500f * 5f * 0.1f * 0.15f; //3D: length, width, depth, coeff
+    private final static float maxLandCapacity = 5f;//500f * 3f * 0.2f * 0.3f;
+    private final static float P_beach = 0.0005f; //3D Shorline Deposition Coeff
+    private final static float P_land = 0.0015f;
+    private final static float lambda = 2 * 24 * 60; //half life (3D)
 
 
 
     //vertical dispersion
-    final static float Rs = 0.0001f; //3D
-    final static float windCoeffForSubsurface = 0.1f;
-    final static float waveLength = 40; // CA based
-    final static float waveHeight = 1.5f;//CA based
-    final static float wavePeriod = 20;
-    final static double Ez = 0.028 * (waveHeight*waveHeight/wavePeriod) * Math.exp(-4*Math.PI/waveLength);
+    private final static float Rs = 0.0001f; //3D
+    private final static float windCoeffForSubsurface = 0.1f;
+    private final static float waveLength = 40; // CA based
+    private final static float waveHeight = 1.5f;//CA based
+    private final static float wavePeriod = 20;
+    private final static double Ez = 0.028 * (waveHeight*waveHeight/wavePeriod) * Math.exp(-4*Math.PI/waveLength);
     //final static double Ez = 100; // (cm^2 /s)
 
 
-    final static float m = 0.1f; //from Cellular Automata Based Model for the Prediction of Oil Slicks Behavior 0.0034, gravity, from Oil Spill Modeling Using 3D: 0.098
-    final static float d = 0.22f; //from 3D, coeff to gravity 0.22 or 0.18
-    final static float borderWanishRatio = 0.89f;//jesli natkiemy sie na granice to przyjmujemy ze ma 90% tyle ropy co nasza oryginalna komorka
+    private final static float m = 0.1f; //from Cellular Automata Based Model for the Prediction of Oil Slicks Behavior 0.0034, gravity, from Oil Spill Modeling Using 3D: 0.098
+    private final static float d = 0.22f; //from 3D, coeff to gravity 0.22 or 0.18
+    private final static float borderWanishRatio = 0.89f;//jesli natkiemy sie na granice to przyjmujemy ze ma 90% tyle ropy co nasza oryginalna komorka
 
 
 
@@ -119,7 +119,7 @@ public class Rules {
 
         //jesli natykamy sie na lad, to traktujemy go jakby mial tyle ropy co dana komorka co zapobiega jej "gubienu" sie na ladzie
 
-        if(oldCell.isBeach() || oldCell.isLand()) {
+        /*if(oldCell.isBeach() || oldCell.isLand()) {
             float sumOfDifference = (i > 0?(cells[i-1][j].isLand()||cells[i-1][j].isBeach() ? oldValue:cells[i-1][j].getOilHeight() * (1+n)) : ifBorder);
             sumOfDifference += (i < board.getHeight()-1? (cells[i+1][j].isLand()||cells[i+1][j].isBeach() ? oldValue:cells[i+1][j].getOilHeight() * (1+s)):ifBorder);
             sumOfDifference += (j > 0? (cells[i][j-1].isLand()||cells[i][j-1].isBeach() ? oldValue: cells[i][j-1].getOilHeight()*(1+w)):ifBorder);
@@ -134,7 +134,7 @@ public class Rules {
 
             return heightOfOli;
 
-        }
+        }*/
 
 
         float sumOfDifference = (i > 0?cells[i-1][j].getOilHeight() * (1+n) : ifBorder);

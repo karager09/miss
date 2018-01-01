@@ -6,6 +6,7 @@ import board.Board;
 import board.BoardFromFile;
 import cell.Cell;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +14,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 
 public class Main extends Application {
@@ -29,6 +32,17 @@ public class Main extends Application {
 
         Pane pane = loader.load();
         Scene scene = new Scene(pane);
+
+        primaryStage.setOnCloseRequest(e -> {
+
+            Platform.exit();
+
+            try {
+                Controller.out.close();
+            } catch (IOException e1) {
+                System.out.println("Can't close file");
+                e1.printStackTrace();
+            }});
 
         primaryStage.setTitle("I MISS U");
         primaryStage.setScene(scene);

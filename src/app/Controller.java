@@ -25,12 +25,19 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
-
+import static java.lang.System.exit;
 
 
 public class Controller {
 
+    static public BufferedWriter out;
+    int lp = 0;
+    float  maxValueSurface = 0, maxValueSubsurface = 0;
 
     Board board = new Board();
 
@@ -58,6 +65,17 @@ public class Controller {
     @FXML
     private Button whatToShow;
 
+    public void writeDataToFile(float maxValueSurface, float maxValueSubsurface, String amountOfOilSurface, String amountOfOilSubsurface, String amountOfOilShorline, String amountOfOilShorlineBelow, String area){
+        ++lp;
+        try {
+            out.newLine();
+            out.write(lp+" "+ String.format("%f",Rules.timePassed) + " "+ String.format("%f",maxValueSurface) +" " + String.format("%f",maxValueSubsurface) + " " + amountOfOilSurface+" " + amountOfOilSubsurface+" "+amountOfOilShorline + " "+amountOfOilShorlineBelow + " "+area);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     @FXML
     public void setWhatToShow(ActionEvent e){
@@ -70,6 +88,7 @@ public class Controller {
         }
     }
 
+
     public int getWhatToShow() {
         if(whatToShow.getText().equals("Subsurface")) return 0;
         return 1;
@@ -77,9 +96,32 @@ public class Controller {
 
     @FXML
     public void rewind(ActionEvent e){
-        for (int i = 0; i < slider_rewind.getValue(); i++) {
+        for (int m = 0; m < slider_rewind.getValue(); m++) {
+
             board = Rules.applyRules(board);
             Rules.timePassed += Rules.timeForOneStep;
+
+
+            float amountOfOilSurface = 0, amountOfOilSubsurface = 0, amountOfOilShorline = 0, amountOfOilShorlineBelow = 0, maxValueSurface = 0, maxValueSubsurface = 0;
+            int area = 0;
+
+            for (int i = 0; i < board.getHeight(); i++) {
+                for (int j = 0; j < board.getWidth(); j++) {
+                    Cell cell = board.getCells()[i][j];
+
+                    if(maxValueSurface < cell.getOilHeight()) maxValueSurface = cell.getOilHeight();
+                    if( !cell.isLand() && !cell.isBeach() && maxValueSubsurface < cell.getOilBelowSurface()) maxValueSubsurface = cell.getOilBelowSurface();
+
+                    if(!cell.isLand() && !cell.isBeach()) amountOfOilSurface += cell.getOilHeight();
+                    if(!cell.isLand() && !cell.isBeach()) amountOfOilSubsurface += cell.getOilBelowSurface();
+                    if(cell.isLand() || cell.isBeach()) amountOfOilShorline += cell.getOilHeight();
+                    if(cell.isLand() || cell.isBeach()) amountOfOilShorlineBelow += cell.getOilBelowSurface();
+                    if(cell.getOilHeight() != 0) ++area;
+
+                }
+            }
+
+            writeDataToFile(maxValueSurface, maxValueSubsurface, String.format("%f",amountOfOilSurface), String.format("%f",amountOfOilSubsurface), String.format("%f",amountOfOilShorline), String.format("%f",amountOfOilShorlineBelow), String.format("%f",area * Rules.lengthOfCellSide * Rules.lengthOfCellSide / 1000000));
         }
         createBoard(board,getWhatToShow());
 
@@ -97,25 +139,12 @@ public class Controller {
 
 
 
-        if(slider_animation_speed.getValue() < 4)
-        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(300),
+        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(300 + slider_animation_speed.getValue() * 80),
                 event -> {
                     for (int i = 0; i < slider_animation_speed.getValue(); i++) {
                         nextState(null);
                     }}));
-        else if(slider_animation_speed.getValue() < 7){
-            timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(500),
-                    event -> {
-                        for (int i = 0; i < slider_animation_speed.getValue(); i++) {
-                            nextState(null);
-                        }}));
-        } else {
-            timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(750),
-                    event -> {
-                        for (int i = 0; i < slider_animation_speed.getValue(); i++) {
-                            nextState(null);
-                        }}));
-        }
+
 
         start_btn.setText("Start");
     }
@@ -137,7 +166,7 @@ public class Controller {
         board = Rules.applyRules(board);
         Rules.timePassed += Rules.timeForOneStep;
         createBoard(board,getWhatToShow());
-
+        writeDataToFile(maxValueSurface, maxValueSubsurface, show_oil_surface_textfield.getText().substring(17), show_oil_subsurface_textfield.getText().substring(20),shorline_oil_textfield.getText().substring(14), shorline_deposition_textfield.getText().substring(19), area_textfield.getText().substring(13));
     }
 
 
@@ -146,7 +175,7 @@ public class Controller {
 
 
         //odpowiedzialne za odpowiednia wysokosc i szerokosc okna
-        double main_height = ((int)((main_window.getHeight() - 50)/board.getHeight())*board.getHeight());
+        double main_height = ((int)((main_window.getHeight() - 70)/board.getHeight())*board.getHeight());
         double main_width = ((int)((main_window.getWidth() - 5)/board.getWidth())*board.getWidth());
 
         //zeby kwadrat
@@ -164,6 +193,7 @@ public class Controller {
 
         //max wartosc slupa oleju
         float maxValue = 0;
+        maxValueSurface = 0; maxValueSubsurface = 0;
         /*if(n == 0){
             maxValue = board.getMaxValueSurface();
         }
@@ -178,8 +208,8 @@ public class Controller {
             for (int j = 0; j < board.getWidth(); j++) {
                 Cell cell = board.getCells()[i][j];
 
-                if(n == 0 && maxValue < cell.getOilHeight()) maxValue = cell.getOilHeight();
-                if(n == 1 && !cell.isLand() && !cell.isBeach() && maxValue < cell.getOilBelowSurface()) maxValue = cell.getOilBelowSurface();
+                if( maxValueSurface < cell.getOilHeight()) maxValueSurface = cell.getOilHeight();
+                if( !cell.isLand() && !cell.isBeach() && maxValueSubsurface < cell.getOilBelowSurface()) maxValueSubsurface = cell.getOilBelowSurface();
 
                 if(!cell.isLand() && !cell.isBeach()) amountOfOilSurface += cell.getOilHeight();
                 if(!cell.isLand() && !cell.isBeach()) amountOfOilSubsurface += cell.getOilBelowSurface();
@@ -189,39 +219,47 @@ public class Controller {
 
             }
         }
-        show_oil_surface_textfield.setText(String.format("Oil surface: %.2f b",amountOfOilSurface));
+
+        if(n == 0) maxValue = maxValueSurface; else maxValue = maxValueSubsurface;
+        show_oil_surface_textfield.setText(String.format("Oil surface (b): %.2f",amountOfOilSurface));
         show_oil_surface_textfield.setPrefWidth(show_oil_surface_textfield.getText().length() * 7 + 15);
 
-        show_oil_subsurface_textfield.setText(String.format("Oil subsurface: %.2f b",amountOfOilSubsurface));
+        show_oil_subsurface_textfield.setText(String.format("Oil subsurface (b): %.2f",amountOfOilSubsurface));
         show_oil_subsurface_textfield.setPrefWidth(show_oil_subsurface_textfield.getText().length() * 7 + 15);
 
-        shorline_oil_textfield.setText(String.format("Shorline: %.2f b", amountOfOilShorline));
+        shorline_oil_textfield.setText(String.format("Shorline (b): %.2f", amountOfOilShorline));
         shorline_oil_textfield.setPrefWidth(shorline_oil_textfield.getText().length() * 7 + 15);
 
-        shorline_deposition_textfield.setText(String.format("Shorline below: %.2f b",amountOfOilShorlineBelow));
+        shorline_deposition_textfield.setText(String.format("Shorline below(b): %.2f",amountOfOilShorlineBelow));
         shorline_deposition_textfield.setPrefWidth(shorline_deposition_textfield.getText().length() * 7 + 15);
 
-        show_time_textfield.setText(String.format("Time: %.2f h",Rules.timePassed));
+        show_time_textfield.setText(String.format("Time (h): %.2f",Rules.timePassed));
         show_time_textfield.setPrefWidth(show_time_textfield.getText().length() * 7 + 20);
 
-        show_max_value_textfield.setText(String.format("Max: %.2f b",maxValue));
+        show_max_value_textfield.setText(String.format("Max (b): %.2f",maxValue));
         show_max_value_textfield.setPrefWidth(show_max_value_textfield.getText().length() * 7 + 25);
 
-        area_textfield.setText(String.format("Area: %.1f", area * Rules.lengthOfCellSide * Rules.lengthOfCellSide / 1000000));
+        area_textfield.setText(String.format("Area (km^2): %.1f", area * Rules.lengthOfCellSide * Rules.lengthOfCellSide / 1000000));
         area_textfield.setPrefWidth(area_textfield.getText().length() * 7 + 20);
 
 
         int w = (int) (main_width / board.getWidth());
         int h = (int) (main_height / board.getHeight());
 
-        boolean needForChangeSize = ((Rectangle)tilePane.getChildren().get(0)).getWidth() != w ? true : false;
+        if (((Rectangle)tilePane.getChildren().get(0)).getWidth() != w){
+            for (int i = 0; i < board.getHeight(); i++) {
+                for (int j = 0; j < board.getWidth(); j++) {
+                    Rectangle r = (Rectangle)tilePane.getChildren().get(i*Board.HEIGHT + j);
+                    r.setWidth(w);
+                    r.setHeight(h);
+                }
+            }
+        };
+
+
         for (int i = 0; i < board.getHeight(); i++) {
             for (int j = 0; j < board.getWidth(); j++) {
                 Rectangle r = (Rectangle)tilePane.getChildren().get(i*Board.HEIGHT + j);
-                //Rectangle r = new Rectangle();
-                if(needForChangeSize) {
-                r.setWidth(w);
-                r.setHeight(h);}
 
 
                 float oilVolume;
@@ -287,6 +325,16 @@ public class Controller {
 
     @FXML
     void initialize(){
+
+        try {
+            out = new BufferedWriter(Files.newBufferedWriter(Paths.get("results.txt")));
+            out.write("\"lp\" \"time\" \"maxValueSurface\" \"maxValueSubsurface\" \"amountOfOilSurface\" \"amountOfOilSubsurface\" \"amountOfOilShorline\" \"shorlineDeposition\" \"area\"");
+
+        } catch (Exception e){
+            System.out.println("Something went wrong with data.txt");
+            e.printStackTrace();
+            exit(1);
+        }
         main_window.widthProperty().addListener((ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) -> {
 
                 createBoard(board,getWhatToShow());
