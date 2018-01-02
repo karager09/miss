@@ -35,14 +35,15 @@ import static java.lang.System.exit;
 
 public class Controller {
 
-    static public BufferedWriter out;
-    int lp = 0;
-    float  maxValueSurface = 0, maxValueSubsurface = 0;
+    static BufferedWriter out;
+    private int lp = 0;
+    private float  maxValueSurface = 0, maxValueSubsurface = 0;
 
-    Board board = new Board();
+    public static Board board = new Board();
+    public static Board board_tmp = new Board();
 
 
-    final Timeline timeline = new Timeline();
+    private final Timeline timeline = new Timeline();
 
     @FXML
     private Button rewind_btn, start_btn, next_state_btn;
@@ -65,7 +66,8 @@ public class Controller {
     @FXML
     private Button whatToShow;
 
-    public void writeDataToFile(float maxValueSurface, float maxValueSubsurface, String amountOfOilSurface, String amountOfOilSubsurface, String amountOfOilShorline, String amountOfOilShorlineBelow, String area){
+
+    private void writeDataToFile(float maxValueSurface, float maxValueSubsurface, String amountOfOilSurface, String amountOfOilSubsurface, String amountOfOilShorline, String amountOfOilShorlineBelow, String area){
         ++lp;
         try {
             out.newLine();
@@ -89,7 +91,7 @@ public class Controller {
     }
 
 
-    public int getWhatToShow() {
+    private int getWhatToShow() {
         if(whatToShow.getText().equals("Subsurface")) return 0;
         return 1;
     }
@@ -139,11 +141,36 @@ public class Controller {
 
 
 
-        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(300 + slider_animation_speed.getValue() * 80),
+        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(300 + slider_animation_speed.getValue() * 30),
                 event -> {
-                    for (int i = 0; i < slider_animation_speed.getValue(); i++) {
-                        nextState(null);
-                    }}));
+                    for (int m = 0; m < slider_animation_speed.getValue(); m++) {
+                        board = Rules.applyRules(board);
+                        Rules.timePassed += Rules.timeForOneStep;
+
+
+                        float amountOfOilSurface = 0, amountOfOilSubsurface = 0, amountOfOilShorline = 0, amountOfOilShorlineBelow = 0, maxValueSurface = 0, maxValueSubsurface = 0;
+                        int area = 0;
+
+                        for (int i = 0; i < board.getHeight(); i++) {
+                            for (int j = 0; j < board.getWidth(); j++) {
+                                Cell cell = board.getCells()[i][j];
+
+                                if(maxValueSurface < cell.getOilHeight()) maxValueSurface = cell.getOilHeight();
+                                if( !cell.isLand() && !cell.isBeach() && maxValueSubsurface < cell.getOilBelowSurface()) maxValueSubsurface = cell.getOilBelowSurface();
+
+                                if(!cell.isLand() && !cell.isBeach()) amountOfOilSurface += cell.getOilHeight();
+                                if(!cell.isLand() && !cell.isBeach()) amountOfOilSubsurface += cell.getOilBelowSurface();
+                                if(cell.isLand() || cell.isBeach()) amountOfOilShorline += cell.getOilHeight();
+                                if(cell.isLand() || cell.isBeach()) amountOfOilShorlineBelow += cell.getOilBelowSurface();
+                                if(cell.getOilHeight() != 0) ++area;
+
+                            }
+                        }
+
+                        writeDataToFile(maxValueSurface, maxValueSubsurface, String.format("%f",amountOfOilSurface), String.format("%f",amountOfOilSubsurface), String.format("%f",amountOfOilShorline), String.format("%f",amountOfOilShorlineBelow), String.format("%f",area * Rules.lengthOfCellSide * Rules.lengthOfCellSide / 1000000));
+                    }
+                    createBoard(board,getWhatToShow());
+                }));
 
 
         start_btn.setText("Start");
@@ -254,7 +281,7 @@ public class Controller {
                     r.setHeight(h);
                 }
             }
-        };
+        }
 
 
         for (int i = 0; i < board.getHeight(); i++) {

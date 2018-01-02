@@ -1,5 +1,6 @@
 package Rules;
 
+import app.Controller;
 import board.Board;
 import board.BoardFromFile;
 import cell.Cell;
@@ -270,13 +271,14 @@ public class Rules {
     }
 
     public static Board applyRules(Board board){
-        Board newBoard = new Board();
+        Board newBoard = Board.getNewBoard();
         for (int i = 0; i < board.getHeight(); i++) {
             for (int j = 0; j < board.getWidth(); j++) {
                 newBoard.getCells()[i][j].setOilHeight(ruleForSurface(board,i,j));
                 newBoard.getCells()[i][j].setOilBelowSurface(ruleForSubsurface(board,i,j));
             }
         }
+        Controller.board_tmp = Controller.board;
         return newBoard;
     }
 

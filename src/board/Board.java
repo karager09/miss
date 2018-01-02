@@ -1,6 +1,7 @@
 package board;
 
 import Rules.Rules;
+import app.Controller;
 import cell.Cell;
 
 import java.util.ArrayList;
@@ -9,14 +10,30 @@ import java.util.concurrent.*;
 
 public class Board {
 
-    public final float[] whenWindAndCurrentChanges = new float[]{};
-    public final int[] temperature = new int[]{273,273};
+    int nn;
+
+    public static final float[] whenWindAndCurrentChanges = new float[]{};
+    public static final int[] temperature = new int[]{273,273};
     public static int HEIGHT = 400, WIDTH = 400;
     private Cell[][] cells;
 
     public Cell[][] getCells() {
         return cells;
     }
+
+
+    public static Board getNewBoard(){
+        int n = 0;
+        while(n<whenWindAndCurrentChanges.length && Rules.timePassed >= whenWindAndCurrentChanges[n] && n < BoardFromFile.cellsWithCurrentSpeed.length) ++n;
+
+        if(Controller.board_tmp.nn != n){
+            return new Board();
+        } else {
+            return Controller.board_tmp;
+        }
+
+    }
+
 
     public Board() {
 
@@ -31,7 +48,7 @@ public class Board {
             }
         }
 
-
+        this.nn = n;
 
         cells[HEIGHT/4][WIDTH/2].setOilHeight(100000f);
 
