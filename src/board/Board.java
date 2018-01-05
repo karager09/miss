@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 
 public class Board {
 
-    int nn;
+    private int nn;
 
     public static final float[] whenWindAndCurrentChanges = new float[]{};
     public static final int[] temperature = new int[]{273,273};
@@ -52,16 +52,9 @@ public class Board {
 
         cells[HEIGHT/4][WIDTH/2].setOilHeight(100000f);
 
-        //dla proby ustawiamy jakis lad
-//        for (int i = HEIGHT/5; i < HEIGHT/5*2; i++) {
-//            for (int j = WIDTH/5; j < WIDTH/5*2; j++) {
-//                cells[i][j] = new Cell(0,true);
-//            }
-//        }
-
     }
 
-
+/*
     public void print() {
         for (Cell[] cTable : cells) {
             for (Cell c : cTable) {
@@ -70,7 +63,9 @@ public class Board {
             }
             System.out.println("|");
         }
-    }
+    }*/
+
+
 /*
     public float getMaxValueSurface(){
         float maxValue = 0;

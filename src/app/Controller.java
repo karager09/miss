@@ -295,7 +295,14 @@ public class Controller {
                 if(maxValue == 0) maxValue=1;// zeby jak sa same zera wyswietlalo jako morze
                 if(board.getCells()[i][j].isLand())  r.setFill(Paint.valueOf("00ff00"));
                 else if(board.getCells()[i][j].isBeach()) r.setFill(Paint.valueOf("ffff00"));
-                else if(oilVolume == 0) r.setFill(Paint.valueOf("ffffff"));
+                else {
+                    String hex;
+                    int  value = (int) (255 * (1 - (oilVolume / maxValue)));
+                        if (value > 15) hex = Integer.toHexString(value);
+                            else { hex = "0"+Integer.toHexString(value);}
+                    r.setFill(Paint.valueOf(hex + hex+ hex));
+                }
+                /*else if(oilVolume == 0) r.setFill(Paint.valueOf("ffffff"));
                 else if(oilVolume < 0.008 * maxValue) r.setFill(Paint.valueOf("fefefe"));
                 else if(oilVolume < 0.016 * maxValue) r.setFill(Paint.valueOf("fdfdfd"));
                 else if(oilVolume < 0.025 * maxValue) r.setFill(Paint.valueOf("fcfcfc"));
@@ -337,7 +344,7 @@ public class Controller {
                 else if(oilVolume < 0.925 * maxValue)r.setFill(Paint.valueOf("202020"));
                 else if(oilVolume < 0.95 * maxValue)r.setFill(Paint.valueOf("1a1a1a"));
                 else if(oilVolume < 0.975 * maxValue)r.setFill(Paint.valueOf("0d0d0d"));
-                else r.setFill(Paint.valueOf("000000"));
+                else r.setFill(Paint.valueOf("000000"));*/
 
 
                 //tilePane.getChildren().add(r);

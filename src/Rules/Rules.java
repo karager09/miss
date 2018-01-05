@@ -51,7 +51,7 @@ public class Rules {
     //final static double Ez = 100; // (cm^2 /s)
 
 
-    private final static float m = 0.1f; //from Cellular Automata Based Model for the Prediction of Oil Slicks Behavior 0.0034, gravity, from Oil Spill Modeling Using 3D: 0.098
+    private final static float m = 0.098f; //from Cellular Automata Based Model for the Prediction of Oil Slicks Behavior 0.0034, gravity, from Oil Spill Modeling Using 3D: 0.098
     private final static float d = 0.22f; //from 3D, coeff to gravity 0.22 or 0.18
     private final static float borderWanishRatio = 0.89f;//jesli natkiemy sie na granice to przyjmujemy ze ma 90% tyle ropy co nasza oryginalna komorka
 
@@ -61,7 +61,7 @@ public class Rules {
 
 
 
-    static float ruleForSurface(Board board, int i, int j){
+    private static float ruleForSurface(Board board, int i, int j){
         Cell oldCell = board.getCells()[i][j];
         Cell[][] cells = board.getCells();
         float oldValue = oldCell.getOilHeight();
@@ -171,7 +171,7 @@ public class Rules {
     }
 
 
-    static float ruleForSubsurface(Board board, int i, int j){
+    private static float ruleForSubsurface(Board board, int i, int j){
 
         Cell[][] cells = board.getCells();
         Cell oldCell = cells[i][j];
