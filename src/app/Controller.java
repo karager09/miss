@@ -57,8 +57,6 @@ public class Controller {
     @FXML
     private BorderPane main_window;
 
-    //@FXML
-    //private FlowPane flowPane;
 
     @FXML
     private TilePane tilePane;
@@ -122,6 +120,7 @@ public class Controller {
 
                 }
             }
+
 
             writeDataToFile(maxValueSurface, maxValueSubsurface, String.format("%f",amountOfOilSurface), String.format("%f",amountOfOilSubsurface), String.format("%f",amountOfOilShorline), String.format("%f",amountOfOilShorlineBelow), String.format("%f",area * Rules.lengthOfCellSide * Rules.lengthOfCellSide / 1000000));
         }

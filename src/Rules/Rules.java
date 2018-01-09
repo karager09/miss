@@ -15,9 +15,9 @@ public class Rules {
     public final static float timeForOneStep = 1.1f;
 
     //evaporation, CA based
-    //final static float p = 0f; //oil evaporation coefficient
-    private final static float temperature = 293;// in Kelvin
-    private final static float percentD = 7.87f; //percentage distilled at 180 oC
+    final static float p = 0.000001f; //oil evaporation coefficient
+    private final static float temperature = 273+10;// in Kelvin
+    private final static float percentD = 1.82f; //percentage distilled at 180 oC  oil type:Port Hueneme, CA, USA
 
 
 
@@ -28,7 +28,7 @@ public class Rules {
 
 
     //wind and current
-    private final static float windInfluenceOnOtherDirections = 0.05f;//0.25
+    private final static float windInfluenceOnOtherDirections = 0.25f;//0.25
     private final static float currentInfluenceOnOtherDirections = 0.1f;
     private final static float R = 0.16f; // wind speed to wind-driven current speed, between 0.03 and 0.16
 
@@ -52,7 +52,7 @@ public class Rules {
 
 
     private final static float m = 0.098f; //from Cellular Automata Based Model for the Prediction of Oil Slicks Behavior 0.0034, gravity, from Oil Spill Modeling Using 3D: 0.098
-    private final static float d = 0.22f; //from 3D, coeff to gravity 0.22 or 0.18
+    private final static float d = 0.18f; //from 3D, coeff to gravity 0.22 or 0.18
     private final static float borderWanishRatio = 0.89f;//jesli natkiemy sie na granice to przyjmujemy ze ma 90% tyle ropy co nasza oryginalna komorka
 
 
@@ -163,8 +163,12 @@ public class Rules {
         float heightOfOli = oldCell.getOilHeight() + m * (sumOfDifference) - oilToSubsurface;
 //        float dissolution = 0.001 * (K * (lengthOfCellSide*lengthOfCellSide)* S0 * Math.exp(-0.1 * timePassed)) * timeForOneStep / (density * 119.24); //odejmujemy ile sie rozpuscilo, 119- zamieniamy na barrel
 
-        float evaporation = (float) (0.0000005 * (0.165 * percentD + 0.45 * (temperature - 15)) * Math.log(timeForOneStep*60*60) * oldValue);
-       // float evaporation = 0;
+        float evaporation;
+        if (timePassed == 0 ) evaporation = (float) ((0.165 *percentD + 0.045 * ((temperature - 273) - 15)) * Math.log(timeForOneStep * 60)) * heightOfOli;
+         else evaporation = (float) ((0.165 *percentD + 0.045 * ((temperature - 273) - 15)) * Math.log((timePassed + timeForOneStep)/timePassed) * heightOfOli);
+
+
+        //float evaporation = p * timeForOneStep * oldCell.temperature * oldValue;
         heightOfOli = heightOfOli - evaporation;
         if (heightOfOli > 0) return heightOfOli;
         return 0;
