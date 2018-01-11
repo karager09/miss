@@ -16,14 +16,14 @@ public class Rules {
 
     //evaporation, CA based
     final static float p = 0.000001f; //oil evaporation coefficient
-    private final static float temperature = 273+10;// in Kelvin
+    private final static float temperature = 273+9;// in Kelvin
     private final static float percentD = 1.82f; //percentage distilled at 180 oC  oil type:Port Hueneme, CA, USA
 
 
 
     //dissolution (rozpuszczanie), CA based model
     private final static float K = 0.000003f; // coefficient
-    private final static float S0 = 10f; //initial solubility, TRZEBA SPRAWDZIC!!
+    private final static float S0 = 30 * 0.000001f; //initial solubility
     private final static float density = 0.8787f; // gestosc (g/cm^3)
 
 
@@ -161,7 +161,7 @@ public class Rules {
 
         //sumOfDifference += -p * timeForOneStep * temperature;
         float heightOfOli = oldCell.getOilHeight() + m * (sumOfDifference) - oilToSubsurface;
-//        float dissolution = 0.001 * (K * (lengthOfCellSide*lengthOfCellSide)* S0 * Math.exp(-0.1 * timePassed)) * timeForOneStep / (density * 119.24); //odejmujemy ile sie rozpuscilo, 119- zamieniamy na barrel
+        float dissolution = (float) (0.001 * K * (lengthOfCellSide*lengthOfCellSide)* S0 * (Math.exp(-0.1 * timePassed*3600) * (timeForOneStep*3600))/ (density * 119.24)); //0.001 oraz (density * 119.24) - ze względu na zamianę jednostek z gramów na barrels
 
         float evaporation;
         if (timePassed == 0 ) evaporation = (float) ((0.165 *percentD + 0.045 * ((temperature - 273) - 15)) * Math.log(timeForOneStep * 60)) * heightOfOli;
@@ -169,7 +169,7 @@ public class Rules {
 
 
         //float evaporation = p * timeForOneStep * oldCell.temperature * oldValue;
-        heightOfOli = heightOfOli - evaporation;
+        heightOfOli = heightOfOli - evaporation - dissolution;
         if (heightOfOli > 0) return heightOfOli;
         return 0;
     }
@@ -265,7 +265,7 @@ public class Rules {
 
         float subsurfaceOil = oilFromSurface + oldCell.getOilBelowSurface() + m * (sumOfDifference);
 
-        double dissolution=  oldCell.oilBelowSurface * (K * (lengthOfCellSide*lengthOfCellSide)* S0 * Math.exp(-0.1 * timePassed)) * (timeForOneStep * 60 * 60) / (density * 119.24); //odejmujemy ile sie rozpuscilo, 119- zamieniamy na barrel
+        double dissolution=  0.001 * (K * (lengthOfCellSide*lengthOfCellSide)* S0 * Math.exp(-0.1 * timePassed)) * (timeForOneStep * 3600) / (density * 119.24); //odejmujemy ile sie rozpuscilo, 119- zamieniamy na barrel
 
         subsurfaceOil = subsurfaceOil - (float)dissolution;
         if(subsurfaceOil > 0) return subsurfaceOil;
