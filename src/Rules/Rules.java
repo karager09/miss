@@ -14,14 +14,13 @@ public class Rules {
     public static float timePassed = 0f;
     public final static float timeForOneStep = 1.1f;
 
-    //evaporation, CA based
+    //evaporation, 'CA based'
     final static float p = 0.000001f; //oil evaporation coefficient
-    private final static float temperature = 273+9;// in Kelvin
     private final static float percentD = 1.82f; //percentage distilled at 180 oC  oil type:Port Hueneme, CA, USA
 
 
 
-    //dissolution (rozpuszczanie), CA based model
+    //dissolution (rozpuszczanie), 'CA based model'
     private final static float K = 0.000003f; // coefficient
     private final static float S0 = 30 * 0.000001f; //initial solubility
     private final static float density = 0.8787f; // gestosc (g/cm^3)
@@ -33,31 +32,27 @@ public class Rules {
     private final static float R = 0.16f; // wind speed to wind-driven current speed, between 0.03 and 0.16
 
     //shorline deposition
-    private final static float maxBeachCapacity = 2f;//500f * 5f * 0.1f * 0.15f; //3D: length, width, depth, coeff
-    private final static float maxLandCapacity = 5f;//500f * 3f * 0.2f * 0.3f;
-    private final static float P_beach = 0.0005f; //3D Shorline Deposition Coeff
-    private final static float P_land = 0.0015f;
-    private final static float lambda = 2 * 24 * 60; //half life (3D)
+    private final static float maxBeachCapacity = 500f * 5f * 0.1f * 0.15f; //2 //3D: length, width, depth, coeff
+    private final static float maxLandCapacity = 500f * 3f * 0.2f * 0.3f; //5
+    private final static float P_beach = 0.05f; //3D Shorline Deposition Coeff
+    private final static float P_land = 0.15f;
+    private final static float lambda = 100 * 24; //half life ('3D')
 
 
 
     //vertical dispersion
-    private final static float Rs = 0.0001f; //3D
+    private final static float Rs = 0.0001f; //'3D'
     private final static float windCoeffForSubsurface = 0.1f;
-    private final static float waveLength = 40; // CA based
-    private final static float waveHeight = 1.5f;//CA based
+    private final static float waveLength = 40; // 'CA based'
+    private final static float waveHeight = 1.5f;//'CA based'
     private final static float wavePeriod = 20;
     private final static double Ez = 0.028 * (waveHeight*waveHeight/wavePeriod) * Math.exp(-4*Math.PI/waveLength);
-    //final static double Ez = 100; // (cm^2 /s)
+    // (cm^2 /s)
 
 
     private final static float m = 0.098f; //from Cellular Automata Based Model for the Prediction of Oil Slicks Behavior 0.0034, gravity, from Oil Spill Modeling Using 3D: 0.098
     private final static float d = 0.18f; //from 3D, coeff to gravity 0.22 or 0.18
     private final static float borderWanishRatio = 0.89f;//jesli natkiemy sie na granice to przyjmujemy ze ma 90% tyle ropy co nasza oryginalna komorka
-
-
-
-
 
 
 
@@ -69,7 +64,10 @@ public class Rules {
 
         float n,ne,e,se,s,sw,w,nw;
 
+        //vertical dispersion
         float oilToSubsurface = (float) (0.1 * (Rs * cells[i][j].getOilHeight() * cells[i][j].windSpeed / BoardFromFile.maxWindSpeedEverObserved) + 0.9 * m * Ez * (oldCell.getOilHeight() - oldCell.getOilBelowSurface()));
+
+        // obliczamy wplyw wiatru i pradow (odpowiedni kierunek)
         float windCoeff = R * cells[i][j].windSpeed / BoardFromFile.maxWindSpeedEverObserved;
         float currentCoeff = cells[i][j].currentSpeed / BoardFromFile.maxCurrentSpeedEverObserved;
 
@@ -116,11 +114,10 @@ public class Rules {
         w += tableOfCoeff[(14 - numberOfDirection) % 8];
         nw += tableOfCoeff[(15 - numberOfDirection) % 8];
 
-        //System.out.println(n + ", " + ne + ", " + e + ", " + se + ", " + s + ", " + sw + ", " + w + ", " + nw);
 
         //jesli natykamy sie na lad, to traktujemy go jakby mial tyle ropy co dana komorka co zapobiega jej "gubienu" sie na ladzie
 
-        /*if(oldCell.isBeach() || oldCell.isLand()) {
+        if(oldCell.isBeach() || oldCell.isLand()) {
             float sumOfDifference = (i > 0?(cells[i-1][j].isLand()||cells[i-1][j].isBeach() ? oldValue:cells[i-1][j].getOilHeight() * (1+n)) : ifBorder);
             sumOfDifference += (i < board.getHeight()-1? (cells[i+1][j].isLand()||cells[i+1][j].isBeach() ? oldValue:cells[i+1][j].getOilHeight() * (1+s)):ifBorder);
             sumOfDifference += (j > 0? (cells[i][j-1].isLand()||cells[i][j-1].isBeach() ? oldValue: cells[i][j-1].getOilHeight()*(1+w)):ifBorder);
@@ -130,12 +127,12 @@ public class Rules {
             sumOfDifference += d *(i > 0 && j < board.getWidth()-1? (cells[i-1][j+1].isLand()||cells[i-1][j+1].isBeach() ? oldValue:cells[i-1][j+1].getOilHeight()*(1+ne)):ifBorder);
             sumOfDifference += d * ((i < board.getHeight()-1 && j < board.getWidth()-1? (cells[i+1][j+1].isLand()||cells[i+1][j+1].isBeach() ? oldValue: cells[i+1][j+1].getOilHeight()*(1+se)):ifBorder) - 4 * oldValue);
 
-            //sumOfDifference += -p * timeForOneStep * temperature;
+
             float heightOfOli = oldCell.getOilHeight() + m * (sumOfDifference) - (ruleForSubsurface(board,i,j) - oldCell.getOilBelowSurface());
 
             return heightOfOli;
 
-        }*/
+        }
 
 
         float sumOfDifference = (i > 0?cells[i-1][j].getOilHeight() * (1+n) : ifBorder);
@@ -148,27 +145,14 @@ public class Rules {
         sumOfDifference += d * ((i < board.getHeight()-1 && j < board.getWidth()-1? cells[i+1][j+1].getOilHeight()*(1+se):ifBorder) - 4 * oldValue);
 
 
-
-       /* float sumOfDifference = (i > 0?(cells[i-1][j].isLand()||cells[i-1][j].isBeach() ? oldValue:cells[i-1][j].getOilHeight() * (1+n)) : ifBorder);
-        sumOfDifference += (i < board.getHeight()-1? (cells[i+1][j].isLand()||cells[i+1][j].isBeach() ? oldValue:cells[i+1][j].getOilHeight() * (1+s)):ifBorder);
-        sumOfDifference += (j > 0? (cells[i][j-1].isLand()||cells[i][j-1].isBeach() ? oldValue: cells[i][j-1].getOilHeight()*(1+w)):ifBorder);
-        sumOfDifference += (j < board.getWidth()-1? (cells[i][j+1].isLand()||cells[i][j+1].isBeach() ? oldValue:cells[i][j+1].getOilHeight() * (1+e)):ifBorder) - 4 * oldValue;
-        sumOfDifference += d * (i > 0 && j>0?(cells[i-1][j-1].isLand()||cells[i-1][j-1].isBeach() ? oldValue:cells[i-1][j-1].getOilHeight()*(1+nw)) : ifBorder);
-        sumOfDifference += d * (i < board.getHeight()-1 && j>0? (cells[i+1][j-1].isLand()||cells[i+1][j-1].isBeach() ? oldValue:cells[i+1][j-1].getOilHeight()*(1+sw)):ifBorder);
-        sumOfDifference += d *(i > 0 && j < board.getWidth()-1? (cells[i-1][j+1].isLand()||cells[i-1][j+1].isBeach() ? oldValue:cells[i-1][j+1].getOilHeight()*(1+ne)):ifBorder);
-        sumOfDifference += d * ((i < board.getHeight()-1 && j < board.getWidth()-1? (cells[i+1][j+1].isLand()||cells[i+1][j+1].isBeach() ? oldValue: cells[i+1][j+1].getOilHeight()*(1+se)):ifBorder) - 4 * oldValue);*/
-
-
-        //sumOfDifference += -p * timeForOneStep * temperature;
         float heightOfOli = oldCell.getOilHeight() + m * (sumOfDifference) - oilToSubsurface;
         float dissolution = (float) (0.001 * K * (lengthOfCellSide*lengthOfCellSide)* S0 * (Math.exp(-0.1 * timePassed*3600) * (timeForOneStep*3600))/ (density * 119.24)); //0.001 oraz (density * 119.24) - ze względu na zamianę jednostek z gramów na barrels
 
         float evaporation;
-        if (timePassed == 0 ) evaporation = (float) ((0.165 *percentD + 0.045 * ((temperature - 273) - 15)) * Math.log(timeForOneStep * 60)) * heightOfOli;
-         else evaporation = (float) ((0.165 *percentD + 0.045 * ((temperature - 273) - 15)) * Math.log((timePassed + timeForOneStep)/timePassed) * heightOfOli);
+        if (timePassed == 0 ) evaporation = (float) ((0.165 *percentD + 0.045 * ((oldCell.temperature - 273) - 15)) * Math.log(timeForOneStep * 60)) * heightOfOli;
+         else evaporation = (float) ((0.165 *percentD + 0.045 * ((oldCell.temperature - 273) - 15)) * Math.log((timePassed + timeForOneStep)/timePassed) * heightOfOli);
 
 
-        //float evaporation = p * timeForOneStep * oldCell.temperature * oldValue;
         heightOfOli = heightOfOli - evaporation - dissolution;
         if (heightOfOli > 0) return heightOfOli;
         return 0;
@@ -182,7 +166,6 @@ public class Rules {
         float oldValue = oldCell.getOilBelowSurface();
         float ifBorder = borderWanishRatio * oldValue;
         float oilFromSurface = (float) (0.1 * (Rs * cells[i][j].getOilHeight() * cells[i][j].windSpeed / BoardFromFile.maxWindSpeedEverObserved) + 0.9 * m * Ez * (oldCell.getOilHeight() - oldCell.getOilBelowSurface()));
-
 
 
         float n,ne,e,se,s,sw,w,nw;
@@ -237,8 +220,8 @@ public class Rules {
 
         if(oldCell.isLand()){
 
-            //float newValue = (float) (oldCell.oilBelowSurface * Math.exp(-timeForOneStep * (-Math.log(1/2)/lambda)) + P_land * oldCell.getOilHeight());
-            float newValue = oldCell.oilBelowSurface + P_land * oldCell.getOilHeight();
+            float newValue = (float) (oldCell.oilBelowSurface * Math.exp(-timeForOneStep * (-Math.log(1/2)/lambda)) + P_land * oldCell.getOilHeight());
+            //float newValue = oldCell.oilBelowSurface + P_land * oldCell.getOilHeight();
             if(newValue > maxLandCapacity) return maxLandCapacity;
             return newValue;
 
@@ -246,8 +229,8 @@ public class Rules {
 
         if(oldCell.isBeach()){
 
-            //float newValue = (float) (oldCell.oilBelowSurface * Math.exp(-timeForOneStep * (-Math.log(1/2)/lambda)) + P_beach * oldCell.getOilHeight());
-            float newValue = oldCell.oilBelowSurface + P_beach * oldCell.getOilHeight();
+            float newValue = (float) (oldCell.oilBelowSurface * Math.exp(-timeForOneStep * (-Math.log(1/2)/lambda)) + P_beach * oldCell.getOilHeight());
+            //float newValue = oldCell.oilBelowSurface + P_beach * oldCell.getOilHeight();
             if(newValue > maxBeachCapacity) return maxBeachCapacity;
             return newValue;
 
@@ -270,10 +253,14 @@ public class Rules {
         subsurfaceOil = subsurfaceOil - (float)dissolution;
         if(subsurfaceOil > 0) return subsurfaceOil;
         return 0;
-
-        //return subsurfaceOil;
     }
 
+
+    /**
+     * glowna funkcja obliczajaca plansze w nastepnym kroku czasowym
+     * @param board
+     * @return
+     */
     public static Board applyRules(Board board){
         Board newBoard = Board.getNewBoard();
         for (int i = 0; i < board.getHeight(); i++) {

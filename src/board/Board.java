@@ -11,17 +11,21 @@ import java.util.concurrent.*;
 public class Board {
 
     private int nn;
-
-    public static final float[] whenWindAndCurrentChanges = new float[]{};
-    public static final int[] temperature = new int[]{273,273};
-    public static int HEIGHT = 400, WIDTH = 400;
+    public static final float[] whenWindAndCurrentChanges = new float[]{};//w tablicy wpisujemy kiedy powinny zajsc zmiany i powinnismy czytac z kolejnych plikow
+    public static final int[] temperature = new int[]{273+9,273+9};//kolejne wartosci temperatur
+    public static int HEIGHT = 400, WIDTH = 400; // rozmiar okna
     private Cell[][] cells;
 
     public Cell[][] getCells() {
         return cells;
     }
 
-
+    /**
+     * główna metoda do tworzenia nowych plansz
+     * (tak na prawdę w celu optymalizacji nie za kazdym razem jest tworzona nowa plansza,
+     * tworzymy dwie i pozniej wymieniamy ktore sa aktywne)
+     * @return
+     */
     public static Board getNewBoard(){
         int n = 0;
         while(n<whenWindAndCurrentChanges.length && Rules.timePassed >= whenWindAndCurrentChanges[n] && n < BoardFromFile.cellsWithCurrentSpeed.length) ++n;
@@ -50,20 +54,13 @@ public class Board {
 
         this.nn = n;
 
-        cells[HEIGHT/4][WIDTH/2].setOilHeight(100000f);
+        cells[3*HEIGHT/4][WIDTH/2].setOilHeight(100000f);
 
     }
 
-/*
-    public void print() {
-        for (Cell[] cTable : cells) {
-            for (Cell c : cTable) {
-                System.out.print("|" + c.getOilBelowSurface());
 
-            }
-            System.out.println("|");
-        }
-    }*/
+//pierwotny kod obliczający maxValue współbieżnie, aby było szybciej
+//później z niego jednak zrezygnowaliśmy
 
 
 /*

@@ -9,13 +9,19 @@ import java.io.File;
 import static cell.Cell.directions.*;
 import static cell.Cell.type.*;
 
+/**
+ * Klasa za pomoca ktorej wczytujemy pliki do pamieci, zeby pozniej z nich skorzystac
+ * i nie musiec za kazdym razem czytac od nowa plikow
+ */
 public class BoardFromFile {
+    //potrzebne dane do pozniejszych obliczen
     public static float maxWindSpeedEverObserved = 100;
     public static float maxCurrentSpeedEverObserved = 30;
 
     public static float maxWindSpeed = 25;
     public static float maxCurrentSpeed = 10;
 
+    //tablice z ktorych pozniej odczytujemy wartosci
     public static Cell.type[][] cellsWithLandType;
     public static float[][][] cellsWithWindSpeed;
     public static Cell.directions[][][] cellsWithWindDirection;
@@ -25,6 +31,7 @@ public class BoardFromFile {
 
     public static void getAllCellsFromFile(){
 
+        //czytamy lady
         cellsWithLandType = new Cell.type[Board.HEIGHT][Board.WIDTH];
         try {
             File file = new File("lands.jpg");
@@ -54,8 +61,8 @@ public class BoardFromFile {
             if(f.getName().contains("windspeed")) windCount++;
             if (f.getName().contains("currentspeed")) currentCount++;
         }
-        //System.out.println(windCount);
 
+        //czytamy pliki z szybkoscia wiatru
         cellsWithWindSpeed = new float[windCount][][];
         for (int n = 1; n <= windCount; n++) {
             cellsWithWindSpeed[n - 1] = new float[Board.HEIGHT][Board.WIDTH];
@@ -76,7 +83,7 @@ public class BoardFromFile {
         }
 
 
-
+        //pliki z szybkoscia pradow
         cellsWithCurrentSpeed = new float[currentCount][][];
         for (int n = 1; n <= currentCount; n++) {
             cellsWithCurrentSpeed[n - 1] = new float[Board.HEIGHT][Board.WIDTH];
@@ -97,7 +104,7 @@ public class BoardFromFile {
         }
 
 
-
+        //pliki z kierunkiem wiatrow
         cellsWithWindDirection = new Cell.directions[windCount][][];
         for (int n = 1; n <= windCount; n++) {
             cellsWithWindDirection[n - 1] = new Cell.directions[Board.HEIGHT][Board.WIDTH];
@@ -131,7 +138,7 @@ public class BoardFromFile {
 
 
 
-
+        //pliki z kierunkiem pradow
         cellsWithCurrentDirection = new Cell.directions[currentCount][][];
         for (int n = 1; n <= currentCount; n++) {
             cellsWithCurrentDirection[n - 1] = new Cell.directions[Board.HEIGHT][Board.WIDTH];

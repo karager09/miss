@@ -46,7 +46,6 @@ public class Main extends Application {
 
         primaryStage.setTitle("I MISS U");
         primaryStage.setScene(scene);
-        //primaryStage.setScene(new Scene(root, 300, 275));
         primaryStage.show();
 
     }

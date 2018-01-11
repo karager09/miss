@@ -35,13 +35,12 @@ import static java.lang.System.exit;
 
 public class Controller {
 
-    static BufferedWriter out;
+    static BufferedWriter out; // plik z rezultatami
     private int lp = 0;
     private float  maxValueSurface = 0, maxValueSubsurface = 0;
 
     public static Board board = new Board();
     public static Board board_tmp = new Board();
-
 
     private final Timeline timeline = new Timeline();
 
@@ -56,7 +55,6 @@ public class Controller {
 
     @FXML
     private BorderPane main_window;
-
 
     @FXML
     private TilePane tilePane;
@@ -132,15 +130,8 @@ public class Controller {
     public void setAnimationSpeed(MouseEvent e){
 
         timeline.stop();
-//        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(10000/slider_animation_speed.getValue()),
-//                event -> nextState(null)));
 
-//        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(500*slider_animation_speed.getValue()),
-//                event -> nextState(null)));
-
-
-
-        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(300 + slider_animation_speed.getValue() * 30),
+        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(400 + slider_animation_speed.getValue() * 40),
                 event -> {
                     for (int m = 0; m < slider_animation_speed.getValue(); m++) {
                         board = Rules.applyRules(board);
@@ -192,7 +183,7 @@ public class Controller {
         board = Rules.applyRules(board);
         Rules.timePassed += Rules.timeForOneStep;
         createBoard(board,getWhatToShow());
-        writeDataToFile(maxValueSurface, maxValueSubsurface, show_oil_surface_textfield.getText().substring(17), show_oil_subsurface_textfield.getText().substring(20),shorline_oil_textfield.getText().substring(14), shorline_deposition_textfield.getText().substring(19), area_textfield.getText().substring(13));
+        writeDataToFile(maxValueSurface, maxValueSubsurface, show_oil_surface_textfield.getText().substring(17), show_oil_subsurface_textfield.getText().substring(20),shorline_oil_textfield.getText().substring(19), shorline_deposition_textfield.getText().substring(14), area_textfield.getText().substring(13));
     }
 
 
@@ -208,11 +199,7 @@ public class Controller {
         if(main_height > main_width) main_height = main_width;
         else main_width = main_height;
 
-//        flowPane.getChildren().clear();
-//        flowPane.setMaxWidth(main_width);
-//        flowPane.setPrefWidth(main_width);
-//        flowPane.setMinWidth(main_width);
-
+        //zeby mozna bylo skalowac
         tilePane.setMaxWidth(main_width);
         tilePane.setPrefWidth(main_width);
         tilePane.setMinWidth(main_width);
@@ -220,6 +207,8 @@ public class Controller {
         //max wartosc slupa oleju
         float maxValue = 0;
         maxValueSurface = 0; maxValueSubsurface = 0;
+
+        //do wcześniejszego, współbieżnego kodu
         /*if(n == 0){
             maxValue = board.getMaxValueSurface();
         }
@@ -230,6 +219,7 @@ public class Controller {
         float amountOfOilSurface = 0, amountOfOilSubsurface = 0, amountOfOilShorline = 0, amountOfOilShorlineBelow = 0;
         int area = 0;
 
+        // obliczanie statystyk
         for (int i = 0; i < board.getHeight(); i++) {
             for (int j = 0; j < board.getWidth(); j++) {
                 Cell cell = board.getCells()[i][j];
@@ -246,6 +236,7 @@ public class Controller {
             }
         }
 
+        //wypisywanie statystyk
         if(n == 0) maxValue = maxValueSurface; else maxValue = maxValueSubsurface;
         show_oil_surface_textfield.setText(String.format("Oil surface (b): %.2f",amountOfOilSurface));
         show_oil_surface_textfield.setPrefWidth(show_oil_surface_textfield.getText().length() * 7 + 15);
@@ -253,10 +244,10 @@ public class Controller {
         show_oil_subsurface_textfield.setText(String.format("Oil subsurface (b): %.2f",amountOfOilSubsurface));
         show_oil_subsurface_textfield.setPrefWidth(show_oil_subsurface_textfield.getText().length() * 7 + 15);
 
-        shorline_oil_textfield.setText(String.format("Shorline (b): %.2f", amountOfOilShorline));
+        shorline_oil_textfield.setText(String.format("Near shorline (b): %.2f", amountOfOilShorline));
         shorline_oil_textfield.setPrefWidth(shorline_oil_textfield.getText().length() * 7 + 15);
 
-        shorline_deposition_textfield.setText(String.format("Shorline below(b): %.2f",amountOfOilShorlineBelow));
+        shorline_deposition_textfield.setText(String.format("Shorline (b): %.2f",amountOfOilShorlineBelow));
         shorline_deposition_textfield.setPrefWidth(shorline_deposition_textfield.getText().length() * 7 + 15);
 
         show_time_textfield.setText(String.format("Time (h): %.2f",Rules.timePassed));
@@ -291,6 +282,7 @@ public class Controller {
                 float oilVolume;
                 if(n == 0) oilVolume = board.getCells()[i][j].getOilHeight(); else oilVolume = board.getCells()[i][j].getOilBelowSurface();
 
+                //wyswietlanie ropy w odpowiednich kolorach szarosci
                 if(maxValue == 0) maxValue=1;// zeby jak sa same zera wyswietlalo jako morze
                 if(board.getCells()[i][j].isLand())  r.setFill(Paint.valueOf("00ff00"));
                 else if(board.getCells()[i][j].isBeach()) r.setFill(Paint.valueOf("ffff00"));
@@ -301,52 +293,6 @@ public class Controller {
                             else { hex = "0"+Integer.toHexString(value);}
                     r.setFill(Paint.valueOf(hex + hex+ hex));
                 }
-                /*else if(oilVolume == 0) r.setFill(Paint.valueOf("ffffff"));
-                else if(oilVolume < 0.008 * maxValue) r.setFill(Paint.valueOf("fefefe"));
-                else if(oilVolume < 0.016 * maxValue) r.setFill(Paint.valueOf("fdfdfd"));
-                else if(oilVolume < 0.025 * maxValue) r.setFill(Paint.valueOf("fcfcfc"));
-                else if(oilVolume < 0.05 * maxValue) r.setFill(Paint.valueOf("f9f9f9"));
-                else if(oilVolume < 0.075 * maxValue) r.setFill(Paint.valueOf("f5f5f5"));
-                else if(oilVolume < 0.10 * maxValue)r.setFill(Paint.valueOf("f2f2f2"));
-                else if(oilVolume < 0.125 * maxValue)r.setFill(Paint.valueOf("ececec"));
-                else if(oilVolume < 0.15 * maxValue)r.setFill(Paint.valueOf("e6e6e6"));
-                else if(oilVolume < 0.175 * maxValue)r.setFill(Paint.valueOf("e0e0e0"));
-                else if(oilVolume < 0.20 * maxValue)r.setFill(Paint.valueOf("d9d9d9"));
-                else if(oilVolume < 0.225 * maxValue)r.setFill(Paint.valueOf("d2d2d2"));
-                else if(oilVolume < 0.25 * maxValue)r.setFill(Paint.valueOf("cccccc"));
-                else if(oilVolume < 0.275 * maxValue)r.setFill(Paint.valueOf("c5c5c5"));
-                else if(oilVolume < 0.30 * maxValue)r.setFill(Paint.valueOf("bfbfbf"));
-                else if(oilVolume < 0.325 * maxValue)r.setFill(Paint.valueOf("b9b9b9"));
-                else if(oilVolume < 0.35 * maxValue)r.setFill(Paint.valueOf("b3b3b3"));
-                else if(oilVolume < 0.375 * maxValue)r.setFill(Paint.valueOf("acacac"));
-                else if(oilVolume < 0.40 * maxValue)r.setFill(Paint.valueOf("a6a6a6"));
-                else if(oilVolume < 0.425 * maxValue)r.setFill(Paint.valueOf("a0a0a0"));
-                else if(oilVolume < 0.45 * maxValue)r.setFill(Paint.valueOf("999999"));
-                else if(oilVolume < 0.475 * maxValue)r.setFill(Paint.valueOf("929292"));
-                else if(oilVolume < 0.50 * maxValue)r.setFill(Paint.valueOf("8c8c8c"));
-                else if(oilVolume < 0.525 * maxValue)r.setFill(Paint.valueOf("868686"));
-                else if(oilVolume < 0.55 * maxValue)r.setFill(Paint.valueOf("808080"));
-                else if(oilVolume < 0.575 * maxValue)r.setFill(Paint.valueOf("797979"));
-                else if(oilVolume < 0.60 * maxValue)r.setFill(Paint.valueOf("737373"));
-                else if(oilVolume < 0.635 * maxValue)r.setFill(Paint.valueOf("6c6c6c"));
-                else if(oilVolume < 0.65 * maxValue)r.setFill(Paint.valueOf("666666"));
-                else if(oilVolume < 0.675 * maxValue)r.setFill(Paint.valueOf("606060"));
-                else if(oilVolume < 0.70 * maxValue)r.setFill(Paint.valueOf("595959"));
-                else if(oilVolume < 0.725 * maxValue)r.setFill(Paint.valueOf("535353"));
-                else if(oilVolume < 0.75 * maxValue)r.setFill(Paint.valueOf("4d4d4d"));
-                else if(oilVolume < 0.775 * maxValue)r.setFill(Paint.valueOf("464646"));
-                else if(oilVolume < 0.80 * maxValue)r.setFill(Paint.valueOf("404040"));
-                else if(oilVolume < 0.825 * maxValue)r.setFill(Paint.valueOf("393939"));
-                else if(oilVolume < 0.85 * maxValue)r.setFill(Paint.valueOf("333333"));
-                else if(oilVolume < 0.875 * maxValue)r.setFill(Paint.valueOf("2c2c2c"));
-                else if(oilVolume < 0.90 * maxValue)r.setFill(Paint.valueOf("262626"));
-                else if(oilVolume < 0.925 * maxValue)r.setFill(Paint.valueOf("202020"));
-                else if(oilVolume < 0.95 * maxValue)r.setFill(Paint.valueOf("1a1a1a"));
-                else if(oilVolume < 0.975 * maxValue)r.setFill(Paint.valueOf("0d0d0d"));
-                else r.setFill(Paint.valueOf("000000"));*/
-
-
-                //tilePane.getChildren().add(r);
 
             }
         }
@@ -361,7 +307,7 @@ public class Controller {
 
         try {
             out = new BufferedWriter(Files.newBufferedWriter(Paths.get("results.txt")));
-            out.write("\"lp\" \"time\" \"maxValueSurface\" \"maxValueSubsurface\" \"amountOfOilSurface\" \"amountOfOilSubsurface\" \"amountOfOilShorline\" \"shorlineDeposition\" \"area\"");
+            out.write("\"lp\" \"time\" \"maxValueSurface\" \"maxValueSubsurface\" \"amountOfOilSurface\" \"amountOfOilSubsurface\" \"oilNearShorline\" \"shorlineDeposition\" \"area\"");
 
         } catch (Exception e){
             System.out.println("Something went wrong with data.txt");
