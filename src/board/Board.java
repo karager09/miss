@@ -11,20 +11,18 @@ import java.util.concurrent.*;
 public class Board {
 
     private int nn;
-    public static final float[] whenWindAndCurrentChanges = new float[]{};//w tablicy wpisujemy kiedy powinny zajsc zmiany i powinnismy czytac z kolejnych plikow
-    public static final int[] temperature = new int[]{273+9,273+9};//kolejne wartosci temperatur
-    public static int HEIGHT = 400, WIDTH = 400; // rozmiar okna
+    private static final float[] whenWindAndCurrentChanges = new float[]{};//w tablicy wpisujemy kiedy powinny zajsc zmiany i powinnismy czytac z kolejnych plikow
+    private static final int[] temperature = new int[]{273+9,273+9};//kolejne wartosci temperatur
+    private static int HEIGHT = 400, WIDTH = 400; // rozmiar okna
     private Cell[][] cells;
 
-    public Cell[][] getCells() {
-        return cells;
-    }
+    public Cell[][] getCells() { return cells;}
 
     /**
      * główna metoda do tworzenia nowych plansz
      * (tak na prawdę w celu optymalizacji nie za kazdym razem jest tworzona nowa plansza,
      * tworzymy dwie i pozniej wymieniamy ktore sa aktywne)
-     * @return
+     * @return nowa plansza
      */
     public static Board getNewBoard(){
         int n = 0;
@@ -54,7 +52,7 @@ public class Board {
 
         this.nn = n;
 
-        cells[3*HEIGHT/4][WIDTH/2].setOilHeight(100000f);
+        cells[HEIGHT/2][WIDTH/2].setOilHeight(100000f);
 
     }
 
@@ -154,11 +152,11 @@ public class Board {
 
     }*/
 
-    public int getHeight() {
+    public static int getHeight() {
         return HEIGHT;
     }
 
-    public int getWidth() {
+    public static int getWidth() {
         return WIDTH;
     }
 }

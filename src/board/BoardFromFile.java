@@ -18,27 +18,27 @@ public class BoardFromFile {
     public static float maxWindSpeedEverObserved = 100;
     public static float maxCurrentSpeedEverObserved = 30;
 
-    public static float maxWindSpeed = 25;
-    public static float maxCurrentSpeed = 10;
+    private static float maxWindSpeed = 25;
+    private static float maxCurrentSpeed = 10;
 
     //tablice z ktorych pozniej odczytujemy wartosci
-    public static Cell.type[][] cellsWithLandType;
-    public static float[][][] cellsWithWindSpeed;
-    public static Cell.directions[][][] cellsWithWindDirection;
-    public static float[][][] cellsWithCurrentSpeed;
-    public static Cell.directions[][][] cellsWithCurrentDirection;
+    static Cell.type[][] cellsWithLandType;
+    static float[][][] cellsWithWindSpeed;
+    static Cell.directions[][][] cellsWithWindDirection;
+    static float[][][] cellsWithCurrentSpeed;
+    static Cell.directions[][][] cellsWithCurrentDirection;
 
 
     public static void getAllCellsFromFile(){
 
         //czytamy lady
-        cellsWithLandType = new Cell.type[Board.HEIGHT][Board.WIDTH];
+        cellsWithLandType = new Cell.type[Board.getHeight()][Board.getWidth()];
         try {
             File file = new File("lands.jpg");
             BufferedImage image = ImageIO.read(file);
 
-            for (int i = 0; i < Board.HEIGHT; i++) {
-                for (int j = 0; j < Board.WIDTH; j++) {
+            for (int i = 0; i < Board.getHeight(); i++) {
+                for (int j = 0; j < Board.getWidth(); j++) {
                     int pxl = image.getRGB(j, i);
                     if((pxl & 0x00ffffff) > 0xefefef) //czy jest białe, jak tak to morze
                         cellsWithLandType[i][j] = WATER;
@@ -65,14 +65,14 @@ public class BoardFromFile {
         //czytamy pliki z szybkoscia wiatru
         cellsWithWindSpeed = new float[windCount][][];
         for (int n = 1; n <= windCount; n++) {
-            cellsWithWindSpeed[n - 1] = new float[Board.HEIGHT][Board.WIDTH];
+            cellsWithWindSpeed[n - 1] = new float[Board.getHeight()][Board.getWidth()];
 
             try {
                 File file = new File("windspeed"+n+".jpg");
                 BufferedImage image = ImageIO.read(file);
 
-                for (int i = 0; i < Board.HEIGHT; i++) {
-                    for (int j = 0; j < Board.WIDTH; j++) {
+                for (int i = 0; i < Board.getHeight(); i++) {
+                    for (int j = 0; j < Board.getWidth(); j++) {
                         int pxl = image.getRGB(j, i);
                         cellsWithWindSpeed[n-1][i][j] = maxWindSpeed * (0x00ffffff - pxl & 0x00ffffff) / 0x00ffffff;
                     }
@@ -86,14 +86,14 @@ public class BoardFromFile {
         //pliki z szybkoscia pradow
         cellsWithCurrentSpeed = new float[currentCount][][];
         for (int n = 1; n <= currentCount; n++) {
-            cellsWithCurrentSpeed[n - 1] = new float[Board.HEIGHT][Board.WIDTH];
+            cellsWithCurrentSpeed[n - 1] = new float[Board.getHeight()][Board.getWidth()];
 
             try {
                 File file = new File("currentspeed" + n + ".jpg");
                 BufferedImage image = ImageIO.read(file);
 
-                for (int i = 0; i < Board.HEIGHT; i++) {
-                    for (int j = 0; j < Board.WIDTH; j++) {
+                for (int i = 0; i < Board.getHeight(); i++) {
+                    for (int j = 0; j < Board.getWidth(); j++) {
                         int pxl = image.getRGB(j, i);
                         cellsWithCurrentSpeed[n - 1][i][j] = maxCurrentSpeed * (0x00ffffff - pxl & 0x00ffffff) / 0x00ffffff;
                     }
@@ -107,14 +107,14 @@ public class BoardFromFile {
         //pliki z kierunkiem wiatrow
         cellsWithWindDirection = new Cell.directions[windCount][][];
         for (int n = 1; n <= windCount; n++) {
-            cellsWithWindDirection[n - 1] = new Cell.directions[Board.HEIGHT][Board.WIDTH];
+            cellsWithWindDirection[n - 1] = new Cell.directions[Board.getHeight()][Board.getWidth()];
 
             try {
                 File file = new File("winddirection"+n+".jpg");
                 BufferedImage image = ImageIO.read(file);
 
-                for (int i = 0; i < Board.HEIGHT; i++) {
-                    for (int j = 0; j < Board.WIDTH; j++) {
+                for (int i = 0; i < Board.getHeight(); i++) {
+                    for (int j = 0; j < Board.getWidth(); j++) {
                         int pxl = image.getRGB(j, i);
                         int  red   = (pxl & 0x00ff0000) >> 16;
                         int  green = (pxl & 0x0000ff00) >> 8;
@@ -141,14 +141,14 @@ public class BoardFromFile {
         //pliki z kierunkiem pradow
         cellsWithCurrentDirection = new Cell.directions[currentCount][][];
         for (int n = 1; n <= currentCount; n++) {
-            cellsWithCurrentDirection[n - 1] = new Cell.directions[Board.HEIGHT][Board.WIDTH];
+            cellsWithCurrentDirection[n - 1] = new Cell.directions[Board.getHeight()][Board.getWidth()];
 
             try {
                 File file = new File("currentdirection"+n+".jpg");
                 BufferedImage image = ImageIO.read(file);
 
-                for (int i = 0; i < Board.HEIGHT; i++) {
-                    for (int j = 0; j < Board.WIDTH; j++) {
+                for (int i = 0; i < Board.getHeight(); i++) {
+                    for (int j = 0; j < Board.getWidth(); j++) {
                         int pxl = image.getRGB(j, i);
                         int  red   = (pxl & 0x00ff0000) >> 16;
                         int  green = (pxl & 0x0000ff00) >> 8;

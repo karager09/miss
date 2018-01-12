@@ -103,8 +103,8 @@ public class Controller {
             float amountOfOilSurface = 0, amountOfOilSubsurface = 0, amountOfOilShorline = 0, amountOfOilShorlineBelow = 0, maxValueSurface = 0, maxValueSubsurface = 0;
             int area = 0;
 
-            for (int i = 0; i < board.getHeight(); i++) {
-                for (int j = 0; j < board.getWidth(); j++) {
+            for (int i = 0; i < Board.getHeight(); i++) {
+                for (int j = 0; j < Board.getWidth(); j++) {
                     Cell cell = board.getCells()[i][j];
 
                     if(maxValueSurface < cell.getOilHeight()) maxValueSurface = cell.getOilHeight();
@@ -141,8 +141,8 @@ public class Controller {
                         float amountOfOilSurface = 0, amountOfOilSubsurface = 0, amountOfOilShorline = 0, amountOfOilShorlineBelow = 0, maxValueSurface = 0, maxValueSubsurface = 0;
                         int area = 0;
 
-                        for (int i = 0; i < board.getHeight(); i++) {
-                            for (int j = 0; j < board.getWidth(); j++) {
+                        for (int i = 0; i < Board.getHeight(); i++) {
+                            for (int j = 0; j < Board.getWidth(); j++) {
                                 Cell cell = board.getCells()[i][j];
 
                                 if(maxValueSurface < cell.getOilHeight()) maxValueSurface = cell.getOilHeight();
@@ -192,8 +192,8 @@ public class Controller {
 
 
         //odpowiedzialne za odpowiednia wysokosc i szerokosc okna
-        double main_height = ((int)((main_window.getHeight() - 70)/board.getHeight())*board.getHeight());
-        double main_width = ((int)((main_window.getWidth() - 5)/board.getWidth())*board.getWidth());
+        double main_height = ((int)((main_window.getHeight() - 70)/Board.getHeight())*Board.getHeight());
+        double main_width = ((int)((main_window.getWidth() - 5)/Board.getWidth())*Board.getWidth());
 
         //zeby kwadrat
         if(main_height > main_width) main_height = main_width;
@@ -220,8 +220,8 @@ public class Controller {
         int area = 0;
 
         // obliczanie statystyk
-        for (int i = 0; i < board.getHeight(); i++) {
-            for (int j = 0; j < board.getWidth(); j++) {
+        for (int i = 0; i < Board.getHeight(); i++) {
+            for (int j = 0; j < Board.getWidth(); j++) {
                 Cell cell = board.getCells()[i][j];
 
                 if( maxValueSurface < cell.getOilHeight()) maxValueSurface = cell.getOilHeight();
@@ -260,13 +260,13 @@ public class Controller {
         area_textfield.setPrefWidth(area_textfield.getText().length() * 7 + 20);
 
 
-        int w = (int) (main_width / board.getWidth());
-        int h = (int) (main_height / board.getHeight());
+        int w = (int) (main_width / Board.getWidth());
+        int h = (int) (main_height / Board.getHeight());
 
         if (((Rectangle)tilePane.getChildren().get(0)).getWidth() != w){
-            for (int i = 0; i < board.getHeight(); i++) {
-                for (int j = 0; j < board.getWidth(); j++) {
-                    Rectangle r = (Rectangle)tilePane.getChildren().get(i*Board.HEIGHT + j);
+            for (int i = 0; i < Board.getHeight(); i++) {
+                for (int j = 0; j < Board.getWidth(); j++) {
+                    Rectangle r = (Rectangle)tilePane.getChildren().get(i*Board.getHeight() + j);
                     r.setWidth(w);
                     r.setHeight(h);
                 }
@@ -274,9 +274,9 @@ public class Controller {
         }
 
 
-        for (int i = 0; i < board.getHeight(); i++) {
-            for (int j = 0; j < board.getWidth(); j++) {
-                Rectangle r = (Rectangle)tilePane.getChildren().get(i*Board.HEIGHT + j);
+        for (int i = 0; i < Board.getHeight(); i++) {
+            for (int j = 0; j < Board.getWidth(); j++) {
+                Rectangle r = (Rectangle)tilePane.getChildren().get(i*Board.getHeight() + j);
 
 
                 float oilVolume;
@@ -284,11 +284,11 @@ public class Controller {
 
                 //wyswietlanie ropy w odpowiednich kolorach szarosci
                 if(maxValue == 0) maxValue=1;// zeby jak sa same zera wyswietlalo jako morze
-                if(board.getCells()[i][j].isLand())  r.setFill(Paint.valueOf("00ff00"));
-                else if(board.getCells()[i][j].isBeach()) r.setFill(Paint.valueOf("ffff00"));
+                if(board.getCells()[i][j].isLand() && oilVolume == 0)  r.setFill(Paint.valueOf("00ff00"));
+                else if(board.getCells()[i][j].isBeach() && oilVolume == 0) r.setFill(Paint.valueOf("ffff00"));
                 else {
                     String hex;
-                    int  value = (int) (255 * (1 - (oilVolume / maxValue)));
+                    int  value = (int) Math.ceil(255 * (1 - (oilVolume / maxValue)));
                         if (value > 15) hex = Integer.toHexString(value);
                             else { hex = "0"+Integer.toHexString(value);}
                     r.setFill(Paint.valueOf(hex + hex+ hex));
@@ -329,11 +329,11 @@ public class Controller {
         timeline.setCycleCount(Animation.INDEFINITE);
         setAnimationSpeed(null);
 
-        tilePane.setPrefColumns(Board.WIDTH);
-        tilePane.setPrefRows(Board.HEIGHT);
+        tilePane.setPrefColumns(Board.getWidth());
+        tilePane.setPrefRows(Board.getHeight());
 
-        for (int i = 0; i < Board.HEIGHT; i++) {
-            for (int j = 0; j < Board.WIDTH; j++) {
+        for (int i = 0; i < Board.getHeight(); i++) {
+            for (int j = 0; j < Board.getWidth(); j++) {
                 tilePane.getChildren().add(new Rectangle());
             }
         }

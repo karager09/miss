@@ -44,7 +44,7 @@ public class Main extends Application {
                 e1.printStackTrace();
             }});
 
-        primaryStage.setTitle("I MISS U");
+        primaryStage.setTitle("Symulacja rozprzestrzeniania się ropy naftowej");
         primaryStage.setScene(scene);
         primaryStage.show();
 

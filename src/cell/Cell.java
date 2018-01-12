@@ -7,29 +7,14 @@ public class Cell {
     public enum type{WATER,LAND,BEACH}
 
 
-    public type typeOfLand;
-    public float oilHeight;
+    private type typeOfLand;
+    private float oilHeight;
     public float oilBelowSurface;
-    public float oilSettled;
     public float currentSpeed;
     public float windSpeed;
     public directions windDirection;
     public directions currentDirection;
     public int temperature;
-
-
-
-    public Cell(Cell oldCell){
-        this.typeOfLand = oldCell.typeOfLand;
-        this.oilHeight = oldCell.oilHeight;
-
-    }
-
-
-    public Cell(float oilHeight, type typeOfLand){
-        this.oilHeight = oilHeight;
-        this.typeOfLand = typeOfLand;
-    }
 
 
     public Cell(type typeOfLand, float currentSpeed, float windSpeed, directions windDirection, directions currentDirection, int temperature) {
@@ -45,29 +30,19 @@ public class Cell {
         oilHeight = height;
     }
 
-    public float getOilHeight() {
-        return oilHeight;
-    }
+    public float getOilHeight() {return oilHeight; }
 
-    public void setOilBelowSurface(float oilBelowSurface){
-        this.oilBelowSurface = oilBelowSurface;
-    }
+    public void setOilBelowSurface(float oilBelowSurface){ this.oilBelowSurface = oilBelowSurface; }
 
     public float getOilBelowSurface(){return oilBelowSurface;}
 
-    public void setOilSettled(float oilSettled){
-        this.oilSettled = oilSettled;
-    }
-
 
     public boolean isLand(){
-        if (typeOfLand == type.LAND) return true;
-        return false;
+        return typeOfLand == type.LAND;
     }
 
     public boolean isBeach(){
-        if (typeOfLand == type.BEACH) return true;
-        return false;
+        return typeOfLand == type.BEACH;
     }
 
 }
