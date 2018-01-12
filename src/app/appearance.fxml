@@ -18,7 +18,7 @@
                   <Insets left="10.0" right="10.0" top="10.0" />
                </FlowPane.margin>
             </Button>
-            <Slider fx:id="slider_animation_speed" blockIncrement="5.0" majorTickUnit="2.0" max="10.0" min="1.0" minorTickCount="1" onMouseReleased="#setAnimationSpeed" showTickMarks="true" value="1.0">
+            <Slider fx:id="slider_animation_speed" blockIncrement="5.0" majorTickUnit="2.0" max="8.0" min="1.0" minorTickCount="1" onMouseReleased="#setAnimationSpeed" showTickMarks="true" value="1.0">
                <FlowPane.margin>
                   <Insets left="10.0" right="10.0" top="10.0" />
                </FlowPane.margin>
@@ -33,7 +33,7 @@
                   <Insets left="10.0" right="10.0" top="10.0" />
                </FlowPane.margin>
             </Button>
-            <Slider id="slider_rewind" fx:id="slider_rewind" blockIncrement="5.0" majorTickUnit="200.0" max="2000.0" min="1.0" minorTickCount="100" prefHeight="45.0" prefWidth="150.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="100.0">
+            <Slider id="slider_rewind" fx:id="slider_rewind" blockIncrement="5.0" majorTickUnit="200.0" max="1000.0" min="1.0" minorTickCount="100" prefHeight="45.0" prefWidth="150.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="100.0">
                <effect>
                   <Glow />
                </effect>

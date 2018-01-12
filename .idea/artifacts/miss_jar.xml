@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="miss:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/miss_jar</output-path>
+    <root id="archive" name="miss.jar">
+      <element id="module-output" name="miss" />
+    </root>
+  </artifact>
+</component>

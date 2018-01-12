@@ -131,7 +131,7 @@ public class Controller {
 
         timeline.stop();
 
-        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(400 + slider_animation_speed.getValue() * 40),
+        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(400 + slider_animation_speed.getValue() * 150),
                 event -> {
                     for (int m = 0; m < slider_animation_speed.getValue(); m++) {
                         board = Rules.applyRules(board);
@@ -284,8 +284,8 @@ public class Controller {
 
                 //wyswietlanie ropy w odpowiednich kolorach szarosci
                 if(maxValue == 0) maxValue=1;// zeby jak sa same zera wyswietlalo jako morze
-                if(board.getCells()[i][j].isLand() && oilVolume == 0)  r.setFill(Paint.valueOf("00ff00"));
-                else if(board.getCells()[i][j].isBeach() && oilVolume == 0) r.setFill(Paint.valueOf("ffff00"));
+                if(board.getCells()[i][j].isLand())  r.setFill(Paint.valueOf("00ff00"));
+                else if(board.getCells()[i][j].isBeach()) r.setFill(Paint.valueOf("ffff00"));
                 else {
                     String hex;
                     int  value = (int) Math.ceil(255 * (1 - (oilVolume / maxValue)));
