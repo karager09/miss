@@ -1,10 +1,15 @@
 # miss
 Modelowanie i Symulacja Systemów - Oil Spill Modeling Using Cellular Automata
 
-Do przeczytania bardziej trafne:
-* A MODEL FOR THE PREDICTION OF OIL SLICK MOVEMENT AND SPREADING USING CA (głębokość: 1)
-* Cellular Automata Based Model for the Prediction of Oil Slicks Behavior (głębokość:2, tak chyba zrobimy)
-* Oil Spill Modeling Using 3D Cellular Automata for Coastal Waters (głębokość: 5)
+Projekt stworzony na potrzeby studiów.
+Polega na symulacji rozprzesztrzenianiu się ropy naftowej, przy zadanych warunkach podgodowych.
+Bierze pod uwagę wszystkie zjawiska, które mają największy wpływ na to zjawisko m.in:
+-rozprzestrzenianie ze względu na grawitację, 
+-wiatry, 
+-prądy morskie, 
+-parowanie,
+-emulsyfikacja,
+-rozpuszczanie
+-osiadanie na brzegach
 
-Wyjebałem źródła jakbyście nie widzieli, bo prawa autoskie mogłem niechcąco pogwałcić dosyć mocno xd
-Takżę jakbyście nie zdążyli ich ściągnąć to piszcie, jakoś je wam udostępnie.
+Praca powstała na podstawie innych prac naukowych wymienionych w sprawozdaniu, które podsumowuje wyniki pracy i które zawiera wszystkie potrzebne informacje.
